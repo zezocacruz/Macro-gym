@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Calculadora de Macros</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html" class="ativo">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Calculadora de Macros Diárias</h1>
+        <p class="subtitulo">Calcula quantas calorias e macronutrientes deves comer por dia com base no teu corpo e objetivo</p>
+
+        <div class="card">
+            <h2>Os teus dados</h2>
+            <form class="formulario" id="form-macros">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo" required>
+                            <option value="masculino">Masculino</option>
+                            <option value="feminino">Feminino</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="idade">Idade</label>
+                        <input type="number" id="idade" min="10" max="100" placeholder="Ex: 20" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="altura">Altura (cm)</label>
+                        <input type="number" id="altura" min="100" max="250" placeholder="Ex: 175" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="peso-atual">Peso (kg)</label>
+                        <input type="number" id="peso-atual" step="0.1" min="30" max="250" placeholder="Ex: 70" required>
+                    </div>
+                </div>
+
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="massa-gorda-macros">Massa Gorda (%) <small style="color:var(--cor-texto-claro);">opcional</small></label>
+                        <input type="number" id="massa-gorda-macros" step="0.1" min="3" max="60" placeholder="Ex: 15 (mais preciso)">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="atividade">Nível de atividade</label>
+                        <select id="atividade" required>
+                            <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+                            <option value="1.375">Leve (treino 1-3x por semana)</option>
+                            <option value="1.55" selected>Moderado (treino 3-5x por semana)</option>
+                            <option value="1.725">Intenso (treino 6-7x por semana)</option>
+                            <option value="1.9">Muito intenso (2x por dia / trabalho físico)</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="objetivo">Objetivo</label>
+                        <select id="objetivo" required>
+                            <option value="perder">Perder gordura (-20%)</option>
+                            <option value="perder-leve">Perder gordura lento (-10%)</option>
+                            <option value="manter" selected>Manter peso</option>
+                            <option value="ganhar-leve">Ganhar massa lento (+10%)</option>
+                            <option value="ganhar">Ganhar massa (+20%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primario">Calcular</button>
+            </form>
+        </div>
+
+        <div id="resultados" style="display:none;">
+            <div class="card">
+                <h2>O teu plano diário</h2>
+                <div class="resultado-macros">
+                    <div class="resultado-card">
+                        <div class="titulo">TMB (Basal)</div>
+                        <div class="valor-grande" id="res-tmb">0</div>
+                        <div class="subvalor">kcal em repouso</div>
+                    </div>
+                    <div class="resultado-card">
+                        <div class="titulo">TDEE (Gasto Total)</div>
+                        <div class="valor-grande" id="res-tdee">0</div>
+                        <div class="subvalor">kcal com atividade</div>
+                    </div>
+                    <div class="resultado-card destaque">
+                        <div class="titulo">Calorias Alvo</div>
+                        <div class="valor-grande" id="res-alvo">0</div>
+                        <div class="subvalor" id="res-obj">—</div>
+                    </div>
+                    <div class="resultado-card">
+                        <div class="titulo">Água</div>
+                        <div class="valor-grande" id="res-agua">0</div>
+                        <div class="subvalor">litros / dia</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:2rem; margin-bottom:1rem;">Distribuição de Macros</h3>
+                <div class="macros">
+                    <div class="macro macro-proteina">
+                        <div class="nome">Proteína</div>
+                        <div class="valor"><span id="res-p">0</span>g</div>
+                        <div style="font-size:0.8rem; opacity:0.9; margin-top:0.3rem;"><span id="res-p-cal">0</span> kcal</div>
+                    </div>
+                    <div class="macro macro-hidratos">
+                        <div class="nome">Hidratos</div>
+                        <div class="valor"><span id="res-h">0</span>g</div>
+                        <div style="font-size:0.8rem; opacity:0.9; margin-top:0.3rem;"><span id="res-h-cal">0</span> kcal</div>
+                    </div>
+                    <div class="macro macro-gordura">
+                        <div class="nome">Gordura</div>
+                        <div class="valor"><span id="res-g">0</span>g</div>
+                        <div style="font-size:0.8rem; opacity:0.9; margin-top:0.3rem;"><span id="res-g-cal">0</span> kcal</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Como foi calculado?</strong><br>
+                    <span id="info-formula">—</span><br><br>
+                    <strong>Distribuição usada:</strong><br>
+                    Proteína: <span id="info-p">—</span> g/kg · Gordura: ~25% das calorias · Hidratos: restante
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Entender os valores</h2>
+            <p style="margin-bottom:0.8rem;"><strong>TMB (Taxa Metabólica Basal):</strong> energia que o corpo gasta em repouso só para funcionar (respirar, circular sangue, etc.).</p>
+            <p style="margin-bottom:0.8rem;"><strong>TDEE (Total Daily Energy Expenditure):</strong> TMB + energia gasta com atividade física. É o que gastas por dia em média.</p>
+            <p style="margin-bottom:0.8rem;"><strong>Calorias Alvo:</strong> quanto deves comer para atingir o teu objetivo (défice para perder, superávit para ganhar).</p>
+            <p><strong>Macros:</strong> proteína para manter/construir músculo, hidratos para energia, gordura para hormonas e vitaminas.</p>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

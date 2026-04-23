@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Diário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html" class="ativo">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Diário de Bem-estar</h1>
+        <p class="subtitulo">Regista como te sentes — correlacionar sono e energia com treino e dieta ajuda a perceber o que funciona.</p>
+
+        <div class="card">
+            <h2>Água de hoje</h2>
+            <div class="agua-bloco">
+                <div class="agua-display">
+                    <div class="valor-grande"><span data-agua="ml">0</span> / <span data-agua="objetivo-ml">2000</span> ml</div>
+                    <div class="subvalor"><span data-agua="copos">0</span> copos de 250ml (meta: <span data-agua="objetivo">8</span> copos)</div>
+                    <div class="barra-progresso" style="margin-top:0.8rem;">
+                        <div class="barra-preenchida" data-agua="barra" style="background-color: var(--cor-secundaria); width:0%;"></div>
+                    </div>
+                </div>
+                <div class="agua-botoes">
+                    <button class="btn btn-secundario" onclick="incAgua()">+ Copo (250ml)</button>
+                    <button class="btn btn-perigo" onclick="decAgua()">− Copo</button>
+                    <button class="btn btn-perigo" onclick="resetAgua()" style="opacity:0.7;">Reset do dia</button>
+                </div>
+            </div>
+            <div class="agua-custom">
+                <div class="agua-custom-grupo">
+                    <label>Adicionar quantidade personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-custom-input" min="1" placeholder="Ex: 500 (garrafa)">
+                        <button class="btn btn-secundario" onclick="adicionarAguaCustom()">+ Adicionar</button>
+                    </div>
+                </div>
+                <div class="agua-custom-grupo">
+                    <label>Meta diária personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-objetivo-input" min="100" placeholder="Ex: 2500">
+                        <button class="btn btn-primario" onclick="definirObjetivoAgua()">Guardar meta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Registo do dia</h2>
+            <form class="formulario" id="form-diario">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="data-diario">Data</label>
+                        <input type="date" id="data-diario" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="sono">Horas de sono</label>
+                        <input type="number" id="sono" step="0.5" min="0" max="24" placeholder="Ex: 7.5">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="energia">Energia (1-10)</label>
+                        <input type="number" id="energia" min="1" max="10" placeholder="Ex: 8">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="humor">Humor</label>
+                        <select id="humor">
+                            <option value="otimo">Ótimo</option>
+                            <option value="bom">Bom</option>
+                            <option value="neutro" selected>Neutro</option>
+                            <option value="mau">Mau</option>
+                            <option value="pessimo">Péssimo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grupo">
+                    <label for="notas">Notas</label>
+                    <textarea id="notas" rows="3" placeholder="Como correu o dia? Treino, stress, refeições..." style="padding:0.7rem; border:1px solid var(--cor-borda); border-radius:8px; background-color:var(--cor-input); color:var(--cor-texto); font-family:inherit; font-size:1rem; resize:vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primario">Guardar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Histórico</h2>
+            <div id="historico-diario"></div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

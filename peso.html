@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Peso & Composição</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html" class="ativo">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Peso & Composição Corporal</h1>
+        <p class="subtitulo">Regista o teu progresso físico</p>
+
+        <div class="card">
+            <h2>Novo Registo</h2>
+            <form class="formulario" id="form-peso">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="data-registo">Data</label>
+                        <input type="date" id="data-registo" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" step="0.1" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="massa-gorda">Massa Gorda (%)</label>
+                        <input type="number" id="massa-gorda" step="0.1" min="0" max="100">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="massa-magra">Massa Magra (kg)</label>
+                        <input type="number" id="massa-magra" step="0.1" min="0">
+                    </div>
+                </div>
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="cintura">Cintura (cm)</label>
+                        <input type="number" id="cintura" step="0.1" min="0">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="peito">Peito (cm)</label>
+                        <input type="number" id="peito" step="0.1" min="0">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="braco">Braço (cm)</label>
+                        <input type="number" id="braco" step="0.1" min="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primario">Guardar Registo</button>
+            </form>
+        </div>
+
+        <div class="grid-dashboard">
+            <div class="card-estatistica">
+                <h3>Último Peso</h3>
+                <div class="valor" id="ultimo-peso">-- <span class="unidade">kg</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Massa Gorda</h3>
+                <div class="valor" id="ultima-gorda">-- <span class="unidade">%</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Massa Magra</h3>
+                <div class="valor" id="ultima-magra">-- <span class="unidade">kg</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>IMC</h3>
+                <div class="valor" id="imc-valor">--</div>
+                <div style="color:var(--cor-texto-claro); font-size:0.85rem; margin-top:0.3rem;" id="imc-classif">—</div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Tendência</h3>
+                <div class="valor" id="tendencia-valor" style="font-size:1.8rem;">--</div>
+                <div style="color:var(--cor-texto-claro); font-size:0.85rem; margin-top:0.3rem;" id="tendencia-desc">—</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Histórico de Registos</h2>
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Peso</th>
+                        <th>M. Gorda</th>
+                        <th>M. Magra</th>
+                        <th>Cintura</th>
+                        <th>Peito</th>
+                        <th>Braço</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-pesos">
+                    <tr>
+                        <td colspan="8" style="text-align:center; color:var(--cor-texto-claro);">
+                            Ainda não tens registos
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

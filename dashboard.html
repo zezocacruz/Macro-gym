@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html" class="ativo">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Dashboard</h1>
+        <p class="subtitulo">Resumo do teu progresso de hoje</p>
+
+        <div class="grid-dashboard">
+            <div class="card-estatistica">
+                <h3>Calorias Hoje</h3>
+                <div class="valor"><span id="dash-calorias-hoje">0</span> <span class="unidade">kcal</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Objetivo Diário</h3>
+                <div class="valor"><span id="dash-objetivo">2500</span> <span class="unidade">kcal</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Peso Atual</h3>
+                <div class="valor"><span id="dash-peso">--</span> <span class="unidade">kg</span></div>
+            </div>
+            <div class="card-estatistica">
+                <h3>Massa Magra</h3>
+                <div class="valor"><span id="dash-massa-magra">--</span> <span class="unidade">kg</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Macros de Hoje</h2>
+            <div class="macros">
+                <div class="macro macro-proteina">
+                    <div class="nome">Proteína</div>
+                    <div class="valor" id="dash-proteina">0g</div>
+                </div>
+                <div class="macro macro-hidratos">
+                    <div class="nome">Hidratos</div>
+                    <div class="valor" id="dash-hidratos">0g</div>
+                </div>
+                <div class="macro macro-gordura">
+                    <div class="nome">Gordura</div>
+                    <div class="valor" id="dash-gordura">0g</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Água de hoje</h2>
+            <div class="agua-bloco">
+                <div class="agua-display">
+                    <div class="valor-grande"><span data-agua="ml">0</span> / <span data-agua="objetivo-ml">2000</span> ml</div>
+                    <div class="subvalor"><span data-agua="copos">0</span> copos de 250ml (meta: <span data-agua="objetivo">8</span> copos)</div>
+                    <div class="barra-progresso" style="margin-top:0.8rem;">
+                        <div class="barra-preenchida" data-agua="barra" style="background-color:var(--cor-secundaria); width:0%;"></div>
+                    </div>
+                </div>
+                <div class="agua-botoes">
+                    <button class="btn btn-secundario" onclick="incAgua()">+ Copo</button>
+                    <button class="btn btn-perigo" onclick="decAgua()">− Copo</button>
+                </div>
+            </div>
+            <div class="agua-custom">
+                <div class="agua-custom-grupo">
+                    <label>Adicionar quantidade personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-custom-input" min="1" placeholder="Ex: 500">
+                        <button class="btn btn-secundario" onclick="adicionarAguaCustom()">+ Adicionar</button>
+                    </div>
+                </div>
+                <div class="agua-custom-grupo">
+                    <label>Meta diária personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-objetivo-input" min="100" placeholder="Ex: 2500">
+                        <button class="btn btn-primario" onclick="definirObjetivoAgua()">Guardar meta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Acesso Rápido</h2>
+            <p style="margin-bottom:1rem;">O que queres fazer?</p>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <a href="dieta.html" class="btn btn-primario" style="text-decoration:none;">Adicionar Refeição</a>
+                <a href="peso.html" class="btn btn-secundario" style="text-decoration:none;">Registar Peso</a>
+                <a href="diario.html" class="btn btn-secundario" style="text-decoration:none;">Registar Diário</a>
+                <a href="estatisticas.html" class="btn btn-primario" style="text-decoration:none;">Ver Gráficos</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Backup dos dados</h2>
+            <p class="subtitulo" style="margin-bottom:1rem;">Guarda um ficheiro com todos os teus dados ou restaura a partir de um backup anterior.</p>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                <button class="btn btn-primario" onclick="exportarDados()">Exportar dados</button>
+                <label class="btn btn-secundario" style="cursor:pointer;">
+                    Importar dados
+                    <input type="file" accept=".json" onchange="importarDados(event)" style="display:none;">
+                </label>
+                <button class="btn btn-perigo" onclick="limparTodosDados()" style="margin-left:auto; opacity:0.7;">Apagar tudo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

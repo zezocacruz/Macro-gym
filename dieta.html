@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Dieta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html" class="ativo">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Plano de Dieta</h1>
+        <p class="subtitulo">Regista as tuas refeições e acompanha os macros</p>
+
+        <div class="card">
+            <h2>Adicionar Refeição</h2>
+
+            <div class="toggle-modo">
+                <button type="button" class="btn-toggle ativo" id="modo-lista-btn">Escolher da lista</button>
+                <button type="button" class="btn-toggle" id="modo-manual-btn">Inserir manualmente</button>
+            </div>
+
+            <!-- MODO LISTA -->
+            <form class="formulario" id="form-lista">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="data-refeicao">Data</label>
+                        <input type="date" id="data-refeicao" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="tipo-refeicao-lista">Refeição</label>
+                        <select id="tipo-refeicao-lista" required>
+                            <option value="pequeno-almoco">Pequeno-almoço</option>
+                            <option value="almoco">Almoço</option>
+                            <option value="lanche">Lanche</option>
+                            <option value="jantar">Jantar</option>
+                            <option value="ceia">Ceia</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="alimento-lista">Alimento</label>
+                        <select id="alimento-lista" required>
+                            <option value="">-- Escolhe um alimento --</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="quantidade">Quantidade (g ou ml)</label>
+                        <input type="number" id="quantidade" min="1" step="1" placeholder="Ex: 150" required>
+                    </div>
+                </div>
+
+                <div class="preview-macros" id="preview-macros" style="display:none;">
+                    <h4>Valores calculados:</h4>
+                    <div class="preview-valores">
+                        <span><strong id="prev-cal">0</strong> kcal</span>
+                        <span style="color:var(--cor-proteina);"><strong id="prev-p">0</strong>g prot.</span>
+                        <span style="color:var(--cor-hidratos);"><strong id="prev-h">0</strong>g hid.</span>
+                        <span style="color:var(--cor-gordura);"><strong id="prev-g">0</strong>g gord.</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primario">Adicionar</button>
+            </form>
+
+            <!-- MODO MANUAL -->
+            <form class="formulario" id="form-refeicao" style="display:none;">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="data-refeicao-manual">Data</label>
+                        <input type="date" id="data-refeicao-manual" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="tipo-refeicao">Refeição</label>
+                        <select id="tipo-refeicao" required>
+                            <option value="pequeno-almoco">Pequeno-almoço</option>
+                            <option value="almoco">Almoço</option>
+                            <option value="lanche">Lanche</option>
+                            <option value="jantar">Jantar</option>
+                            <option value="ceia">Ceia</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="nome-alimento">Alimento</label>
+                        <input type="text" id="nome-alimento" placeholder="Ex: Frango grelhado" required>
+                    </div>
+                </div>
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="calorias">Calorias (kcal)</label>
+                        <input type="number" id="calorias" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="proteina">Proteína (g)</label>
+                        <input type="number" id="proteina" min="0" step="0.1" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hidratos">Hidratos (g)</label>
+                        <input type="number" id="hidratos" min="0" step="0.1" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="gordura">Gordura (g)</label>
+                        <input type="number" id="gordura" min="0" step="0.1" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primario">Adicionar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Resumo do Dia</h2>
+            <div class="macros">
+                <div class="macro macro-proteina">
+                    <div class="nome">Proteína</div>
+                    <div class="valor" id="total-proteina">0g</div>
+                </div>
+                <div class="macro macro-hidratos">
+                    <div class="nome">Hidratos</div>
+                    <div class="valor" id="total-hidratos">0g</div>
+                </div>
+                <div class="macro macro-gordura">
+                    <div class="nome">Gordura</div>
+                    <div class="valor" id="total-gordura">0g</div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem;">
+                <strong>Total de Calorias: <span id="total-calorias">0</span> kcal</strong>
+                <div class="barra-progresso">
+                    <div class="barra-preenchida" id="barra-calorias" style="width: 0%;"></div>
+                </div>
+                <small>Objetivo: <span id="objetivo-cal-display">2500</span> kcal</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Refeições de Hoje</h2>
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Refeição</th>
+                        <th>Alimento</th>
+                        <th>Qtd.</th>
+                        <th>Calorias</th>
+                        <th>Proteína</th>
+                        <th>Hidratos</th>
+                        <th>Gordura</th>
+                        <th>Fav.</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-refeicoes">
+                    <tr>
+                        <td colspan="9" style="text-align:center; color:var(--cor-texto-claro);">
+                            Ainda não adicionaste refeições hoje
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Refeições favoritas</h2>
+            <p class="subtitulo" style="margin-bottom:1rem;">Clica "+ Hoje" para adicionar rapidamente ao dia de hoje.</p>
+            <div id="favoritas-container"></div>
+        </div>
+
+        <div class="card">
+            <h2>Os meus alimentos</h2>
+            <p class="subtitulo" style="margin-bottom:1rem;">Cria alimentos personalizados (marcas, receitas) e aparecem na lista de seleção.</p>
+            <form class="formulario" id="form-alimento-custom">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="custom-nome">Nome</label>
+                        <input type="text" id="custom-nome" placeholder="Ex: Iogurte proteico XPTO" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="custom-cal">Cal/100g</label>
+                        <input type="number" id="custom-cal" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="custom-p">Proteína/100g</label>
+                        <input type="number" id="custom-p" step="0.1" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="custom-h">Hidratos/100g</label>
+                        <input type="number" id="custom-h" step="0.1" min="0" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="custom-g">Gordura/100g</label>
+                        <input type="number" id="custom-g" step="0.1" min="0" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primario">Guardar alimento</button>
+            </form>
+            <div id="lista-custom" style="margin-top:1rem;"></div>
+        </div>
+
+        <div class="card">
+            <h2>Histórico (últimas 2 semanas)</h2>
+            <p class="subtitulo" style="margin-bottom:1rem;">O que comeste nos últimos 14 dias, agrupado por data.</p>
+            <div id="historico-container"></div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

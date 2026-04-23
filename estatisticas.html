@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Estatísticas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html" class="ativo">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="titulo-pagina">Estatísticas</h1>
+        <p class="subtitulo">Gráficos do teu progresso</p>
+
+        <div class="card">
+            <h2>Peso ao longo do tempo</h2>
+            <div class="grafico-wrapper">
+                <canvas id="grafico-peso"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Calorias nos últimos 14 dias</h2>
+            <p class="subtitulo" style="margin-bottom:1rem;">A linha vermelha tracejada é o teu objetivo diário.</p>
+            <div class="grafico-wrapper">
+                <canvas id="grafico-calorias"></canvas>
+            </div>
+        </div>
+
+        <div class="grid-dashboard">
+            <div class="card">
+                <h2>Macros médios (últimos 7 dias)</h2>
+                <p class="subtitulo" style="margin-bottom:1rem; font-size:0.85rem;">Distribuição média em calorias.</p>
+                <div class="grafico-wrapper" style="height:280px;">
+                    <canvas id="grafico-macros"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Água nos últimos 14 dias</h2>
+                <p class="subtitulo" style="margin-bottom:1rem; font-size:0.85rem;">Copos de 250ml consumidos.</p>
+                <div class="grafico-wrapper" style="height:280px;">
+                    <canvas id="grafico-agua"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

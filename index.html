@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Início</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">FitTrack</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="ativo">Início</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="dieta.html">Dieta</a></li>
+            <li><a href="peso.html">Peso</a></li>
+            <li><a href="macros.html">Macros</a></li>
+            <li><a href="diario.html">Diário</a></li>
+            <li><a href="estatisticas.html">Estatísticas</a></li>
+            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="container-inicio">
+        <div class="saudacao">
+            <p class="cumprimento" id="cumprimento">Olá</p>
+            <h1 class="nome-utilizador" id="nome-utilizador">—</h1>
+            <p class="frase-dia" id="frase-dia">—</p>
+        </div>
+
+        <div class="inicio-acoes">
+            <a href="dashboard.html" class="acao-card">
+                <div class="acao-titulo">Dashboard</div>
+                <div class="acao-desc">Vê o resumo completo do teu dia</div>
+            </a>
+            <a href="dieta.html" class="acao-card">
+                <div class="acao-titulo">Registar refeição</div>
+                <div class="acao-desc">Adiciona o que comeste</div>
+            </a>
+            <a href="peso.html" class="acao-card">
+                <div class="acao-titulo">Pesar-me</div>
+                <div class="acao-desc">Regista o teu peso e medidas</div>
+            </a>
+            <a href="estatisticas.html" class="acao-card">
+                <div class="acao-titulo">Ver progresso</div>
+                <div class="acao-desc">Gráficos e evolução</div>
+            </a>
+        </div>
+
+        <div class="inicio-breve" id="inicio-breve" style="display:none;">
+            <div class="breve-item">
+                <span class="breve-label">Hoje</span>
+                <span class="breve-valor"><strong id="breve-cal">0</strong> kcal</span>
+            </div>
+            <div class="breve-item">
+                <span class="breve-label">Último peso</span>
+                <span class="breve-valor"><strong id="breve-peso">--</strong> kg</span>
+            </div>
+            <div class="breve-item">
+                <span class="breve-label">Água hoje</span>
+                <span class="breve-valor"><strong id="breve-agua">0</strong> ml</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Personaliza a página inicial
+        const hora = new Date().getHours();
+        let cumpr = 'Olá';
+        if (hora < 12) cumpr = 'Bom dia';
+        else if (hora < 19) cumpr = 'Boa tarde';
+        else cumpr = 'Boa noite';
+        document.getElementById('cumprimento').textContent = cumpr + ',';
+        document.getElementById('nome-utilizador').textContent = Auth.actual() || 'convidado';
+
+        const frases = [
+            "Um dia de cada vez. Progresso, não perfeição.",
+            "O corpo consegue quase tudo. É a mente que precisas de convencer.",
+            "Hoje é um bom dia para te cuidares.",
+            "Pequenos hábitos, grandes resultados.",
+            "A consistência vence a intensidade.",
+            "Faz por ti. Ninguém o faz por ti.",
+            "A única treino mau é o que não fizeste.",
+            "Come bem, dorme bem, treina bem — e confia no processo.",
+            "Respira. Hidrata. Move-te.",
+            "Ontem já passou. Amanhã ainda não chegou. Foca-te em hoje."
+        ];
+        // Frase do dia (muda por dia)
+        const diaAno = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        document.getElementById('frase-dia').textContent = frases[diaAno % frases.length];
+
+        // Breve resumo (só mostra se houver dados)
+        const refHoje = refeicoes.filter(r => r.data === dataHoje());
+        const calHoje = refHoje.reduce((s, r) => s + r.calorias, 0);
+        const ultimoPeso = registos[0];
+        const aguaHoje = aguaML();
+        if (calHoje > 0 || ultimoPeso || aguaHoje > 0) {
+            document.getElementById('inicio-breve').style.display = 'flex';
+            document.getElementById('breve-cal').textContent = calHoje.toFixed(0);
+            document.getElementById('breve-peso').textContent = ultimoPeso ? ultimoPeso.peso : '--';
+            document.getElementById('breve-agua').textContent = aguaHoje;
+        }
+    </script>
+</body>
+</html>

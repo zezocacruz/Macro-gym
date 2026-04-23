@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Entrar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-login">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="logo" style="font-size: 2rem; margin-bottom: 0.5rem;">FitTrack</div>
+            <p style="color: var(--cor-texto-claro); margin-bottom: 2rem;">Entra na tua conta ou cria uma nova</p>
+
+            <div class="toggle-modo" style="margin-bottom: 1.5rem;">
+                <button type="button" class="btn-toggle ativo" id="btn-entrar">Entrar</button>
+                <button type="button" class="btn-toggle" id="btn-criar">Criar conta</button>
+            </div>
+
+            <!-- FORM DE LOGIN -->
+            <form class="formulario" id="form-login">
+                <div class="form-grupo">
+                    <label for="login-nome">Nome de utilizador</label>
+                    <input type="text" id="login-nome" autocomplete="username" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="login-senha">Password</label>
+                    <input type="password" id="login-senha" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn btn-primario">Entrar</button>
+            </form>
+
+            <!-- FORM DE REGISTO -->
+            <form class="formulario" id="form-registo" style="display:none;">
+                <div class="form-grupo">
+                    <label for="reg-nome">Nome de utilizador</label>
+                    <input type="text" id="reg-nome" minlength="3" autocomplete="username" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="reg-senha">Password (mínimo 4 caracteres)</label>
+                    <input type="password" id="reg-senha" minlength="4" autocomplete="new-password" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="reg-confirmar">Confirmar password</label>
+                    <input type="password" id="reg-confirmar" minlength="4" autocomplete="new-password" required>
+                </div>
+                <button type="submit" class="btn btn-primario">Criar conta</button>
+            </form>
+
+            <div class="login-mensagem" id="login-mensagem"></div>
+
+            <p style="color: var(--cor-texto-claro); font-size: 0.8rem; margin-top: 1.5rem; text-align: center;">
+                Os dados ficam guardados no teu browser neste computador.
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const btnEntrar  = document.getElementById('btn-entrar');
+        const btnCriar   = document.getElementById('btn-criar');
+        const formLogin  = document.getElementById('form-login');
+        const formReg    = document.getElementById('form-registo');
+        const msg        = document.getElementById('login-mensagem');
+
+        function mostrarMsg(texto, tipo = 'erro') {
+            msg.className = 'login-mensagem ' + tipo;
+            msg.textContent = texto;
+        }
+        function limparMsg() { msg.className = 'login-mensagem'; msg.textContent = ''; }
+
+        btnEntrar.addEventListener('click', () => {
+            btnEntrar.classList.add('ativo'); btnCriar.classList.remove('ativo');
+            formLogin.style.display = 'grid'; formReg.style.display = 'none';
+            limparMsg();
+        });
+        btnCriar.addEventListener('click', () => {
+            btnCriar.classList.add('ativo'); btnEntrar.classList.remove('ativo');
+            formReg.style.display = 'grid'; formLogin.style.display = 'none';
+            limparMsg();
+        });
+
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            limparMsg();
+            const nome = document.getElementById('login-nome').value.trim();
+            const senha = document.getElementById('login-senha').value;
+            try {
+                await Auth.login(nome, senha);
+                mostrarMsg('Entrou! A carregar…', 'sucesso');
+                setTimeout(() => window.location.href = 'index.html', 500);
+            } catch (err) {
+                mostrarMsg(err.message);
+            }
+        });
+
+        formReg.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            limparMsg();
+            const nome = document.getElementById('reg-nome').value.trim();
+            const senha = document.getElementById('reg-senha').value;
+            const confirmar = document.getElementById('reg-confirmar').value;
+            if (senha !== confirmar) { mostrarMsg('As passwords não coincidem.'); return; }
+            try {
+                await Auth.registar(nome, senha);
+                mostrarMsg('Conta criada! A carregar…', 'sucesso');
+                setTimeout(() => window.location.href = 'index.html', 500);
+            } catch (err) {
+                mostrarMsg(err.message);
+            }
+        });
+    </script>
+</body>
+</html>
