@@ -1,6 +1,64 @@
 // ===== FITTRACK - LÓGICA PRINCIPAL =====
 // Dados guardados no localStorage do browser. Cada utilizador tem o seu próprio namespace.
 
+// ========================================================================
+// ===== TEMA (DARK / LIGHT MODE) =====
+// ========================================================================
+function initTema() {
+    const tema = localStorage.getItem('fittrack_tema') || 'dark';
+    document.body.classList.toggle('light-mode', tema === 'light');
+    _atualizarBtnTema();
+}
+
+function toggleTema() {
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('fittrack_tema', isLight ? 'light' : 'dark');
+    _atualizarBtnTema();
+}
+
+function _atualizarBtnTema() {
+    const isLight = document.body.classList.contains('light-mode');
+    document.querySelectorAll('.btn-tema').forEach(btn => {
+        btn.textContent = isLight ? '🌙' : '☀️';
+        btn.title = isLight ? 'Mudar para modo escuro' : 'Mudar para modo claro';
+    });
+}
+
+initTema(); // aplica tema antes de qualquer outra coisa
+
+// ========================================================================
+// ===== MENU HAMBURGER (MOBILE) =====
+// ========================================================================
+function toggleMenu() {
+    const nav = document.getElementById('nav-links');
+    const btn = document.getElementById('hamburger');
+    if (nav) nav.classList.toggle('aberto');
+    if (btn) btn.classList.toggle('ativo');
+}
+
+// Fechar menu ao clicar num link
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            const nav = document.getElementById('nav-links');
+            const btn = document.getElementById('hamburger');
+            if (nav) nav.classList.remove('aberto');
+            if (btn) btn.classList.remove('ativo');
+        });
+    });
+});
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+    const nav = document.getElementById('nav-links');
+    const btn = document.getElementById('hamburger');
+    if (!nav || !nav.classList.contains('aberto')) return;
+    if (!nav.contains(e.target) && e.target !== btn && !btn?.contains(e.target)) {
+        nav.classList.remove('aberto');
+        btn?.classList.remove('ativo');
+    }
+});
+
 // ===== AUTH (contas locais) =====
 // NOTA: isto é um login "local" — os dados ficam no browser, não num servidor.
 // Serve para separar perfis no mesmo computador.
@@ -126,39 +184,71 @@ function formatarTipo(tipo) {
 // ========================================================================
 // ===== PÁGINA DIETA =====
 // ========================================================================
-const btnLista   = document.getElementById('modo-lista-btn');
-const btnManual  = document.getElementById('modo-manual-btn');
-const formLista  = document.getElementById('form-lista');
-const formManual = document.getElementById('form-refeicao');
+const btnLista    = document.getElementById('modo-lista-btn');
+const btnComposta = document.getElementById('modo-composta-btn');
+const btnManual   = document.getElementById('modo-manual-btn');
+const btnFoto     = document.getElementById('modo-foto-btn');
+const formLista   = document.getElementById('form-lista');
+const formComposta = document.getElementById('form-composta');
+const formManual  = document.getElementById('form-refeicao');
+const formFoto    = document.getElementById('form-foto');
 
-if (btnLista && btnManual) {
-    btnLista.addEventListener('click', () => {
-        btnLista.classList.add('ativo');
-        btnManual.classList.remove('ativo');
-        formLista.style.display = 'grid';
-        formManual.style.display = 'none';
-    });
-    btnManual.addEventListener('click', () => {
-        btnManual.classList.add('ativo');
-        btnLista.classList.remove('ativo');
-        formManual.style.display = 'grid';
-        formLista.style.display = 'none';
+function ativarModo(modo) {
+    [btnLista, btnComposta, btnManual, btnFoto].forEach(b => b && b.classList.remove('ativo'));
+    if (formLista)    formLista.style.display    = 'none';
+    if (formComposta) formComposta.style.display = 'none';
+    if (formManual)   formManual.style.display   = 'none';
+    if (formFoto)     formFoto.style.display     = 'none';
+    if (modo === 'lista')    { btnLista    && btnLista.classList.add('ativo');    formLista    && (formLista.style.display    = 'grid'); }
+    if (modo === 'composta') { btnComposta && btnComposta.classList.add('ativo'); formComposta && (formComposta.style.display = 'grid'); }
+    if (modo === 'manual')   { btnManual   && btnManual.classList.add('ativo');   formManual   && (formManual.style.display   = 'grid'); }
+    if (modo === 'foto')     { btnFoto     && btnFoto.classList.add('ativo');     formFoto     && (formFoto.style.display     = 'block'); }
+}
+if (btnLista)    btnLista.addEventListener('click', () => ativarModo('lista'));
+if (btnComposta) btnComposta.addEventListener('click', () => ativarModo('composta'));
+if (btnManual)   btnManual.addEventListener('click', () => ativarModo('manual'));
+if (btnFoto)     btnFoto.addEventListener('click', () => ativarModo('foto'));
+
+// ===== COMBOBOX PESQUISÁVEL (alimento na lista) =====
+const selectAlimento = document.getElementById('alimento-lista'); // hidden input agora
+const inputBusca     = document.getElementById('alimento-busca');
+const comboLista     = document.getElementById('combobox-lista');
+
+function renderComboboxLista(filtro = '') {
+    if (!comboLista) return;
+    const termo = filtro.trim().toLowerCase();
+    const filtrados = TODOS_ALIMENTOS
+        .map((a, i) => ({ a, i }))
+        .filter(x => x.a.nome.toLowerCase().includes(termo));
+    if (filtrados.length === 0) {
+        comboLista.innerHTML = `<div class="combobox-vazio">Nenhum alimento encontrado</div>`;
+        return;
+    }
+    const selecionadoIdx = selectAlimento ? selectAlimento.value : '';
+    comboLista.innerHTML = filtrados.map(x => `
+        <div class="combobox-opcao ${String(x.i) === selecionadoIdx ? 'selecionado' : ''}" data-idx="${x.i}">
+            ${x.a.nome}${x.a._custom ? '<small>(teu)</small>' : ''}
+        </div>
+    `).join('');
+    comboLista.querySelectorAll('.combobox-opcao').forEach(el => {
+        el.addEventListener('click', () => {
+            const idx = el.dataset.idx;
+            selectAlimento.value = idx;
+            comboLista.querySelectorAll('.combobox-opcao').forEach(o => o.classList.remove('selecionado'));
+            el.classList.add('selecionado');
+            atualizarPreview();
+        });
     });
 }
 
-// Dropdown de alimentos (inclui custom)
-const selectAlimento = document.getElementById('alimento-lista');
 function popularDropdownAlimentos() {
-    if (!selectAlimento) return;
-    selectAlimento.innerHTML = '<option value="">-- Escolhe um alimento --</option>';
-    TODOS_ALIMENTOS.forEach((a, i) => {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = a.nome + (a._custom ? '  (teu)' : '');
-        selectAlimento.appendChild(opt);
-    });
+    renderComboboxLista(inputBusca ? inputBusca.value : '');
 }
 popularDropdownAlimentos();
+
+if (inputBusca) {
+    inputBusca.addEventListener('input', () => renderComboboxLista(inputBusca.value));
+}
 
 // Preview de macros
 const inputQtd = document.getElementById('quantidade');
@@ -176,8 +266,7 @@ function atualizarPreview() {
     document.getElementById('prev-g').textContent   = (alimento.g   * fator).toFixed(1);
     previewBox.style.display = 'block';
 }
-if (selectAlimento) selectAlimento.addEventListener('change', atualizarPreview);
-if (inputQtd)       inputQtd.addEventListener('input', atualizarPreview);
+if (inputQtd) inputQtd.addEventListener('input', atualizarPreview);
 
 const inputDataRefeicao       = document.getElementById('data-refeicao');
 const inputDataRefeicaoManual = document.getElementById('data-refeicao-manual');
@@ -188,9 +277,9 @@ if (inputDataRefeicaoManual) inputDataRefeicaoManual.value = dataHoje();
 if (formLista) {
     formLista.addEventListener('submit', (e) => {
         e.preventDefault();
-        const idx = selectAlimento.value;
+        const idx = selectAlimento ? selectAlimento.value : '';
         const qtd = parseFloat(inputQtd.value);
-        if (idx === '' || !qtd) return;
+        if (idx === '' || !qtd) { alert('Escolhe um alimento da lista e indica a quantidade.'); return; }
         const alimento = TODOS_ALIMENTOS[idx];
         const fator = qtd / 100;
         refeicoes.push({
@@ -207,8 +296,156 @@ if (formLista) {
         atualizarDieta();
         formLista.reset();
         if (inputDataRefeicao) inputDataRefeicao.value = dataHoje();
+        if (selectAlimento) selectAlimento.value = '';
+        if (inputBusca) inputBusca.value = '';
+        renderComboboxLista('');
         previewBox.style.display = 'none';
     });
+}
+
+// ========================================================================
+// ===== REFEIÇÃO COMPOSTA (vários ingredientes) =====
+// ========================================================================
+const inputDataComposta = document.getElementById('data-refeicao-composta');
+if (inputDataComposta) inputDataComposta.value = dataHoje();
+
+let ingredientesAtuais = []; // cada item: { idxAlimento: '', qtd: null, buscaTexto: '' }
+
+function adicionarIngredienteRow() {
+    ingredientesAtuais.push({ idxAlimento: '', qtd: null, buscaTexto: '' });
+    renderIngredientes();
+}
+
+function removerIngredienteRow(i) {
+    ingredientesAtuais.splice(i, 1);
+    renderIngredientes();
+}
+
+function renderIngredientes() {
+    const container = document.getElementById('ingredientes-lista');
+    if (!container) return;
+    if (ingredientesAtuais.length === 0) {
+        container.innerHTML = `<p class="subtitulo" style="font-size:0.9rem;">Ainda não adicionaste ingredientes. Clica em "+ Adicionar ingrediente".</p>`;
+        atualizarPreviewComposta();
+        return;
+    }
+    container.innerHTML = ingredientesAtuais.map((ing, i) => `
+        <div class="ingrediente-row">
+            <div>
+                <label>Alimento</label>
+                <div class="combobox">
+                    <input type="text" class="combobox-input" data-ing-busca="${i}" placeholder="Pesquisar..." value="${ing.buscaTexto || ''}" autocomplete="off">
+                    <div class="combobox-lista" data-ing-lista="${i}"></div>
+                </div>
+            </div>
+            <div>
+                <label>Quantidade (g)</label>
+                <input type="number" min="1" step="1" data-ing-qtd="${i}" value="${ing.qtd || ''}" placeholder="Ex: 100">
+            </div>
+            <button type="button" class="ingrediente-remover" onclick="removerIngredienteRow(${i})">Remover</button>
+        </div>
+    `).join('');
+
+    // listeners para cada linha
+    ingredientesAtuais.forEach((ing, i) => {
+        const inputBuscaIng = container.querySelector(`[data-ing-busca="${i}"]`);
+        const listaIng      = container.querySelector(`[data-ing-lista="${i}"]`);
+        const inputQtdIng   = container.querySelector(`[data-ing-qtd="${i}"]`);
+
+        function renderListaIng(filtro = '') {
+            const termo = filtro.trim().toLowerCase();
+            const filtrados = TODOS_ALIMENTOS.map((a, k) => ({ a, k })).filter(x => x.a.nome.toLowerCase().includes(termo));
+            if (filtrados.length === 0) {
+                listaIng.innerHTML = `<div class="combobox-vazio">Sem resultados</div>`;
+                return;
+            }
+            listaIng.innerHTML = filtrados.map(x => `
+                <div class="combobox-opcao ${String(x.k) === String(ing.idxAlimento) ? 'selecionado' : ''}" data-k="${x.k}">
+                    ${x.a.nome}${x.a._custom ? '<small>(teu)</small>' : ''}
+                </div>
+            `).join('');
+            listaIng.querySelectorAll('.combobox-opcao').forEach(el => {
+                el.addEventListener('click', () => {
+                    ing.idxAlimento = el.dataset.k;
+                    ing.buscaTexto = TODOS_ALIMENTOS[ing.idxAlimento].nome;
+                    inputBuscaIng.value = ing.buscaTexto;
+                    listaIng.querySelectorAll('.combobox-opcao').forEach(o => o.classList.remove('selecionado'));
+                    el.classList.add('selecionado');
+                    atualizarPreviewComposta();
+                });
+            });
+        }
+        renderListaIng(ing.buscaTexto || '');
+
+        inputBuscaIng.addEventListener('input', () => {
+            ing.buscaTexto = inputBuscaIng.value;
+            renderListaIng(inputBuscaIng.value);
+        });
+        inputQtdIng.addEventListener('input', () => {
+            ing.qtd = parseFloat(inputQtdIng.value) || null;
+            atualizarPreviewComposta();
+        });
+    });
+
+    atualizarPreviewComposta();
+}
+
+function calcularTotaisComposta() {
+    let cal = 0, p = 0, h = 0, g = 0;
+    const detalhes = [];
+    ingredientesAtuais.forEach(ing => {
+        if (ing.idxAlimento === '' || !ing.qtd) return;
+        const a = TODOS_ALIMENTOS[ing.idxAlimento];
+        if (!a) return;
+        const fator = ing.qtd / 100;
+        const iCal = a.cal * fator, iP = a.p * fator, iH = a.h * fator, iG = a.g * fator;
+        cal += iCal; p += iP; h += iH; g += iG;
+        detalhes.push({
+            nome: a.nome, qtd: ing.qtd,
+            calorias: +iCal.toFixed(0), proteina: +iP.toFixed(1),
+            hidratos: +iH.toFixed(1), gordura: +iG.toFixed(1)
+        });
+    });
+    return { cal, p, h, g, detalhes };
+}
+
+function atualizarPreviewComposta() {
+    const preview = document.getElementById('preview-composta');
+    if (!preview) return;
+    const totais = calcularTotaisComposta();
+    if (totais.detalhes.length === 0) { preview.style.display = 'none'; return; }
+    document.getElementById('comp-cal').textContent = totais.cal.toFixed(0);
+    document.getElementById('comp-p').textContent   = totais.p.toFixed(1);
+    document.getElementById('comp-h').textContent   = totais.h.toFixed(1);
+    document.getElementById('comp-g').textContent   = totais.g.toFixed(1);
+    preview.style.display = 'block';
+}
+
+if (formComposta) {
+    formComposta.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const totais = calcularTotaisComposta();
+        if (totais.detalhes.length === 0) { alert('Adiciona pelo menos um ingrediente válido (com alimento e quantidade).'); return; }
+        refeicoes.push({
+            data: inputDataComposta.value,
+            tipo: document.getElementById('tipo-refeicao-composta').value,
+            nome: document.getElementById('nome-composta').value,
+            quantidade: null,
+            calorias: +totais.cal.toFixed(0),
+            proteina: +totais.p.toFixed(1),
+            hidratos: +totais.h.toFixed(1),
+            gordura:  +totais.g.toFixed(1),
+            composta: true,
+            ingredientes: totais.detalhes
+        });
+        Storage.salvar('refeicoes', refeicoes);
+        atualizarDieta();
+        formComposta.reset();
+        inputDataComposta.value = dataHoje();
+        ingredientesAtuais = [];
+        renderIngredientes();
+    });
+    renderIngredientes();
 }
 
 // Submissão modo manual
@@ -257,11 +494,15 @@ function atualizarDieta() {
     } else {
         tbody.innerHTML = refeicoesHoje.map((r) => {
             const idxReal = refeicoes.indexOf(r);
+            const qtdTexto = r.quantidade ? r.quantidade + 'g' : (r.composta ? 'composta' : '—');
+            const ingsHtml = (r.composta && r.ingredientes && r.ingredientes.length)
+                ? `<div style="font-size:0.8rem; color:var(--cor-texto-claro); margin-top:0.2rem;">${r.ingredientes.map(ing => `${ing.nome} (${ing.qtd}g)`).join(' + ')}</div>`
+                : '';
             return `
             <tr>
                 <td>${formatarTipo(r.tipo)}</td>
-                <td>${r.nome}</td>
-                <td>${r.quantidade ? r.quantidade + 'g' : '—'}</td>
+                <td>${r.nome}${ingsHtml}</td>
+                <td>${qtdTexto}</td>
                 <td>${r.calorias} kcal</td>
                 <td>${r.proteina}g</td>
                 <td>${r.hidratos}g</td>
@@ -346,7 +587,8 @@ function adicionarFavorita(idxRefeicao) {
     favoritas.push({
         nome: r.nome, quantidade: r.quantidade,
         tipo: r.tipo, calorias: r.calorias,
-        proteina: r.proteina, hidratos: r.hidratos, gordura: r.gordura
+        proteina: r.proteina, hidratos: r.hidratos, gordura: r.gordura,
+        composta: !!r.composta, ingredientes: r.ingredientes || null
     });
     Storage.salvar('favoritas', favoritas);
     atualizarFavoritas();
@@ -360,10 +602,15 @@ function atualizarFavoritas() {
                                Ainda não tens favoritas. Clica na estrela ★ de uma refeição para a guardar.</p>`;
         return;
     }
-    container.innerHTML = favoritas.map((f, i) => `
+    container.innerHTML = favoritas.map((f, i) => {
+        const ingsHtml = (f.composta && f.ingredientes && f.ingredientes.length)
+            ? `<div style="font-size:0.8rem; color:var(--cor-texto-claro); margin-top:0.2rem;">${f.ingredientes.map(ing => `${ing.nome} (${ing.qtd}g)`).join(' + ')}</div>`
+            : '';
+        return `
         <div class="favorita-item">
             <div class="favorita-info">
                 <strong>${f.nome}</strong>${f.quantidade ? ` <span style="color:var(--cor-texto-claro);">${f.quantidade}g</span>` : ''}
+                ${ingsHtml}
                 <div style="font-size:0.85rem; color:var(--cor-texto-claro);">
                     ${f.calorias} kcal · ${f.proteina}g P · ${f.hidratos}g H · ${f.gordura}g G
                 </div>
@@ -372,7 +619,8 @@ function atualizarFavoritas() {
                 <button class="btn btn-primario" style="padding:0.4rem 0.8rem; font-size:0.85rem;" onclick="adicionarDeFavorita(${i})">+ Hoje</button>
                 <button class="btn btn-perigo" onclick="removerFavorita(${i})">✕</button>
             </div>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 }
 
 function adicionarDeFavorita(i) {
@@ -380,7 +628,8 @@ function adicionarDeFavorita(i) {
     if (!f) return;
     refeicoes.push({
         data: dataHoje(), tipo: f.tipo, nome: f.nome, quantidade: f.quantidade,
-        calorias: f.calorias, proteina: f.proteina, hidratos: f.hidratos, gordura: f.gordura
+        calorias: f.calorias, proteina: f.proteina, hidratos: f.hidratos, gordura: f.gordura,
+        composta: !!f.composta, ingredientes: f.ingredientes || null
     });
     Storage.salvar('refeicoes', refeicoes);
     atualizarDieta();
@@ -452,6 +701,267 @@ function removerAlimentoCustom(i) {
 }
 
 if (document.getElementById('tabela-refeicoes')) atualizarDieta();
+
+// ========================================================================
+// ===== FOTO DA COMIDA (GEMINI AI) =====
+// ========================================================================
+let fotoBase64 = null;
+let fotoModoAtual = 'comida'; // 'comida' ou 'rotulo'
+
+function mudarFotoModo(modo) {
+    fotoModoAtual = modo;
+    const btnComida = document.getElementById('foto-comida-btn');
+    const btnRotulo = document.getElementById('foto-rotulo-btn');
+    if (btnComida) btnComida.classList.toggle('ativo', modo === 'comida');
+    if (btnRotulo) btnRotulo.classList.toggle('ativo', modo === 'rotulo');
+    const instrucao = document.getElementById('foto-instrucao');
+    if (instrucao) {
+        instrucao.textContent = modo === 'rotulo'
+            ? 'Tira foto ao rótulo / tabela nutricional do produto. O FitTrack lê os valores automaticamente.'
+            : 'Tira foto à comida e o FitTrack tenta identificar o alimento e os seus macros aproximados.';
+    }
+    // Reset
+    const previewContainer = document.getElementById('foto-preview-container');
+    const btnAnalisar = document.getElementById('btn-analisar');
+    const resultado = document.getElementById('foto-resultado');
+    const fotoInput = document.getElementById('foto-input');
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (btnAnalisar) btnAnalisar.style.display = 'none';
+    if (resultado) resultado.style.display = 'none';
+    if (fotoInput) fotoInput.value = '';
+    fotoBase64 = null;
+}
+
+function verificarApiKeyGemini() {
+    const key = localStorage.getItem('fittrack_gemini_key');
+    const secaoKey = document.getElementById('secao-api-key');
+    if (secaoKey) secaoKey.style.display = key ? 'none' : 'block';
+    return !!key;
+}
+
+function guardarChaveGemini() {
+    const input = document.getElementById('gemini-key-input');
+    if (!input || !input.value.trim()) { alert('Cola a chave API no campo.'); return; }
+    localStorage.setItem('fittrack_gemini_key', input.value.trim());
+    verificarApiKeyGemini();
+    alert('✅ Chave guardada! Agora podes usar a função de foto.');
+}
+
+function removerChaveGemini() {
+    if (!confirm('Remover a chave API Gemini guardada?')) return;
+    localStorage.removeItem('fittrack_gemini_key');
+    verificarApiKeyGemini();
+}
+
+// Inicializar secção de foto
+const fotoInput = document.getElementById('foto-input');
+if (fotoInput) {
+    verificarApiKeyGemini();
+
+    fotoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Comprimir imagem antes de enviar
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                // Redimensionar para máx 800px
+                const canvas = document.createElement('canvas');
+                const MAX = 800;
+                let w = img.width, h = img.height;
+                if (w > MAX || h > MAX) {
+                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                    else       { w = Math.round(w * MAX / h); h = MAX; }
+                }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                fotoBase64 = dataUrl.split(',')[1];
+
+                // Mostrar preview
+                const preview = document.getElementById('foto-preview');
+                const container = document.getElementById('foto-preview-container');
+                if (preview) preview.src = dataUrl;
+                if (container) container.style.display = 'block';
+
+                const btnAnalisar = document.getElementById('btn-analisar');
+                if (btnAnalisar) btnAnalisar.style.display = 'block';
+
+                const resultado = document.getElementById('foto-resultado');
+                if (resultado) resultado.style.display = 'none';
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function analisarFoto() {
+    if (!fotoBase64) { alert('Primeiro seleciona ou tira uma foto.'); return; }
+
+    const apiKey = localStorage.getItem('fittrack_gemini_key');
+    if (!apiKey) {
+        verificarApiKeyGemini();
+        alert('Precisas de guardar a chave API Gemini primeiro. Vê as instruções acima.');
+        return;
+    }
+
+    const loading    = document.getElementById('foto-loading');
+    const btnAnalisar = document.getElementById('btn-analisar');
+    const resultado  = document.getElementById('foto-resultado');
+
+    if (loading) loading.style.display = 'block';
+    if (btnAnalisar) btnAnalisar.disabled = true;
+    if (resultado) resultado.style.display = 'none';
+
+    const prompt = fotoModoAtual === 'rotulo'
+        ? `Analisa esta imagem de uma tabela nutricional ou rótulo alimentar. Extrai os valores POR 100g (ou 100ml). Responde APENAS com JSON válido no formato exato: {"nome":"nome do produto","cal":número,"p":número,"h":número,"g":número}. Se não conseguires ler, responde: {"erro":"motivo"}.`
+        : `Identifica o alimento nesta imagem e fornece os valores nutricionais aproximados POR 100g baseados em tabelas nutricionais standard. Responde APENAS com JSON válido no formato exato: {"nome":"nome do alimento em português","cal":número,"p":número,"h":número,"g":número}. Se não conseguires identificar, responde: {"erro":"motivo"}.`;
+
+    try {
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            { inline_data: { mime_type: 'image/jpeg', data: fotoBase64 } }
+                        ]
+                    }],
+                    generationConfig: { temperature: 0.1, maxOutputTokens: 300 }
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const msg = data.error?.message || `Erro HTTP ${response.status}`;
+            throw new Error(msg);
+        }
+
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        // Extrair JSON da resposta (pode ter texto à volta)
+        const jsonMatch = text.match(/\{[\s\S]*?\}/);
+        if (!jsonMatch) throw new Error('Resposta inesperada da IA. Tenta outra foto.');
+
+        const parsed = JSON.parse(jsonMatch[0]);
+
+        if (parsed.erro) throw new Error(parsed.erro);
+
+        mostrarResultadoFoto(parsed);
+
+    } catch (err) {
+        alert('❌ Erro ao analisar: ' + err.message);
+    } finally {
+        if (loading) loading.style.display = 'none';
+        if (btnAnalisar) btnAnalisar.disabled = false;
+    }
+}
+
+function mostrarResultadoFoto(dados) {
+    const container = document.getElementById('foto-resultado');
+    if (!container) return;
+
+    const titulo = fotoModoAtual === 'rotulo' ? '✅ Rótulo lido com sucesso!' : '✅ Alimento identificado!';
+
+    container.style.display = 'block';
+    container.innerHTML = `
+        <h4>${titulo}</h4>
+        <p style="color:var(--cor-texto-claro); font-size:0.85rem; margin-bottom:1rem;">
+            Verifica e ajusta os valores antes de adicionar. Os valores de calorias/macros são por 100g.
+        </p>
+        <div class="form-linha">
+            <div class="form-grupo">
+                <label>Refeição</label>
+                <select id="foto-tipo">
+                    <option value="pequeno-almoco">Pequeno-almoço</option>
+                    <option value="almoco">Almoço</option>
+                    <option value="lanche">Lanche</option>
+                    <option value="jantar" selected>Jantar</option>
+                    <option value="ceia">Ceia</option>
+                </select>
+            </div>
+            <div class="form-grupo">
+                <label>Nome do alimento</label>
+                <input type="text" id="foto-nome" value="${dados.nome || ''}" placeholder="Nome do alimento">
+            </div>
+            <div class="form-grupo">
+                <label>Quantidade (g)</label>
+                <input type="number" id="foto-qtd" value="100" min="1" step="1">
+            </div>
+        </div>
+        <p style="font-size:0.85rem; color:var(--cor-texto-claro); margin-top:0.5rem; margin-bottom:0.5rem;">
+            Valores por 100g (podes editar):
+        </p>
+        <div class="form-linha">
+            <div class="form-grupo">
+                <label>Calorias (kcal)</label>
+                <input type="number" id="foto-cal" value="${dados.cal ?? ''}" min="0">
+            </div>
+            <div class="form-grupo">
+                <label>Proteína (g)</label>
+                <input type="number" id="foto-p" value="${dados.p ?? ''}" min="0" step="0.1">
+            </div>
+            <div class="form-grupo">
+                <label>Hidratos (g)</label>
+                <input type="number" id="foto-h" value="${dados.h ?? ''}" min="0" step="0.1">
+            </div>
+            <div class="form-grupo">
+                <label>Gordura (g)</label>
+                <input type="number" id="foto-g" value="${dados.g ?? ''}" min="0" step="0.1">
+            </div>
+        </div>
+        <button class="btn btn-secundario" onclick="adicionarDeFoto()" style="margin-top:1rem;">
+            + Adicionar à dieta de hoje
+        </button>
+    `;
+}
+
+function adicionarDeFoto() {
+    const nome  = document.getElementById('foto-nome')?.value?.trim();
+    const qtd   = parseFloat(document.getElementById('foto-qtd')?.value);
+    const cal100 = parseFloat(document.getElementById('foto-cal')?.value);
+    const p100   = parseFloat(document.getElementById('foto-p')?.value) || 0;
+    const h100   = parseFloat(document.getElementById('foto-h')?.value) || 0;
+    const g100   = parseFloat(document.getElementById('foto-g')?.value) || 0;
+    const tipo   = document.getElementById('foto-tipo')?.value || 'jantar';
+
+    if (!nome)          { alert('Indica o nome do alimento.'); return; }
+    if (!qtd || qtd<=0) { alert('Indica uma quantidade válida.'); return; }
+    if (isNaN(cal100))  { alert('Indica as calorias por 100g.'); return; }
+
+    const fator = qtd / 100;
+    refeicoes.push({
+        data: dataHoje(),
+        tipo,
+        nome,
+        quantidade: qtd,
+        calorias: +(cal100 * fator).toFixed(0),
+        proteina: +(p100   * fator).toFixed(1),
+        hidratos: +(h100   * fator).toFixed(1),
+        gordura:  +(g100   * fator).toFixed(1)
+    });
+    Storage.salvar('refeicoes', refeicoes);
+    atualizarDieta();
+
+    // Reset secção
+    const resultado = document.getElementById('foto-resultado');
+    const previewContainer = document.getElementById('foto-preview-container');
+    const btnAnalisar = document.getElementById('btn-analisar');
+    if (resultado) resultado.style.display = 'none';
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (btnAnalisar) btnAnalisar.style.display = 'none';
+    if (fotoInput) fotoInput.value = '';
+    fotoBase64 = null;
+
+    alert('✅ Adicionado com sucesso!');
+}
 
 // ========================================================================
 // ===== PÁGINA PESO =====
@@ -649,11 +1159,10 @@ function setAguaML(ml, data = dataHoje()) {
     atualizarAguaUI();
 }
 function addAguaML(ml) { setAguaML(aguaML() + ml); }
-function incAgua() { addAguaML(250); }     // + copo padrão
-function decAgua() { addAguaML(-250); }    // − copo padrão
+function incAgua() { addAguaML(250); }
+function decAgua() { addAguaML(-250); }
 function resetAgua() { setAguaML(0); }
 
-// Adicionar quantidade personalizada (ml)
 function adicionarAguaCustom() {
     const input = document.getElementById('agua-custom-input');
     if (!input) return;
@@ -663,7 +1172,6 @@ function adicionarAguaCustom() {
     input.value = '';
 }
 
-// Definir meta personalizada (ml)
 function definirObjetivoAgua() {
     const input = document.getElementById('agua-objetivo-input');
     if (!input) return;
@@ -698,7 +1206,6 @@ if (formDiario) {
     const inputDataDiario = document.getElementById('data-diario');
     if (inputDataDiario) inputDataDiario.value = dataHoje();
 
-    // pré-preencher se já houver entrada para a data
     if (inputDataDiario) {
         inputDataDiario.addEventListener('change', carregarDiarioDaData);
         carregarDiarioDaData();
@@ -762,6 +1269,11 @@ function atualizarHistoricoDiario() {
 function gerarGraficos() {
     if (typeof Chart === 'undefined') return;
 
+    const isLight = document.body.classList.contains('light-mode');
+    const textColor  = isLight ? '#1e293b' : '#f1f5f9';
+    const textMuted  = isLight ? '#64748b' : '#94a3b8';
+    const gridColor  = isLight ? '#cbd5e1' : '#334155';
+
     // --- Peso ao longo do tempo ---
     const ctxPeso = document.getElementById('grafico-peso');
     if (ctxPeso && registos.length > 0) {
@@ -778,7 +1290,7 @@ function gerarGraficos() {
                     tension: 0.3, fill: true, borderWidth: 2
                 }]
             },
-            options: estiloGrafico()
+            options: estiloGrafico(textColor, textMuted, gridColor)
         });
     }
 
@@ -807,7 +1319,7 @@ function gerarGraficos() {
                     borderDash: [5, 5], pointRadius: 0
                 }]
             },
-            options: estiloGrafico()
+            options: estiloGrafico(textColor, textMuted, gridColor)
         });
     }
 
@@ -837,7 +1349,10 @@ function gerarGraficos() {
                         borderWidth: 0
                     }]
                 },
-                options: { ...estiloGrafico(), plugins: { legend: { position: 'bottom', labels: { color: '#f1f5f9' } } } }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: textColor } } }
+                }
             });
         }
     }
@@ -854,25 +1369,24 @@ function gerarGraficos() {
         }
         new Chart(ctxAgua, {
             type: 'bar',
-            data: { labels, datasets: [{ label: 'Copos (250ml)', data, backgroundColor: '#10b981', borderRadius: 6 }] },
-            options: estiloGrafico()
+            data: { labels, datasets: [{ label: 'ml de água', data, backgroundColor: '#10b981', borderRadius: 6 }] },
+            options: estiloGrafico(textColor, textMuted, gridColor)
         });
     }
 }
 
-function estiloGrafico() {
+function estiloGrafico(textColor, textMuted, gridColor) {
     return {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: '#f1f5f9' } } },
+        plugins: { legend: { labels: { color: textColor } } },
         scales: {
-            x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-            y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+            x: { ticks: { color: textMuted }, grid: { color: gridColor } },
+            y: { ticks: { color: textMuted }, grid: { color: gridColor } }
         }
     };
 }
 
 if (document.getElementById('grafico-peso') || document.getElementById('grafico-calorias')) {
-    // Esperar Chart.js carregar
     if (typeof Chart !== 'undefined') gerarGraficos();
     else window.addEventListener('load', gerarGraficos);
 }
