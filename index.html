@@ -2,69 +2,364 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitTrack - Início</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FitTrack</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HOME PAGE — MOBILE APP LAYOUT ===== */
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 430px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.2rem 0.6rem;
+            flex-shrink: 0;
+        }
+
+        .app-logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--cor-primaria);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            cursor: default;
+        }
+
+        .header-acoes {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-logout-app {
+            background: transparent;
+            border: 1px solid var(--cor-borda);
+            color: var(--cor-texto-claro);
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout-app:hover, .btn-logout-app:active {
+            background: rgba(239,68,68,0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* --- SAUDAÇÃO --- */
+        .app-greeting {
+            padding: 0.4rem 1.2rem 0.8rem;
+            flex-shrink: 0;
+        }
+        .app-greeting-linha1 {
+            font-size: 0.95rem;
+            color: var(--cor-texto-claro);
+        }
+        .app-greeting-nome {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cor-texto);
+            line-height: 1.2;
+        }
+        .app-greeting-frase {
+            font-size: 0.85rem;
+            color: var(--cor-texto-claro);
+            font-style: italic;
+            margin-top: 0.2rem;
+        }
+
+        /* --- CARDS DE NAVEGAÇÃO --- */
+        .nav-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        .nav-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 1.3rem;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            background: var(--card-grad);
+            flex: 1;
+            min-height: 72px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        filter 0.18s ease;
+            z-index: 1;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Brilho decorativo no canto */
+        .nav-card::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .nav-card-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .nav-card-info {
+            flex: 1;
+        }
+
+        .nav-card-titulo {
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .nav-card-desc {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-top: 0.1rem;
+        }
+
+        .nav-card-stat {
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0.9;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        /* Efeito foco — card pressionado fica maior, outros ficam menores */
+        .nav-cards.tem-focado .nav-card:not(.focado) {
+            transform: scale(0.96);
+            filter: brightness(0.72);
+        }
+        .nav-cards.tem-focado .nav-card.focado {
+            transform: scale(1.04);
+            filter: brightness(1.08);
+            z-index: 10;
+        }
+
+        /* --- WIDGET DE PROGRESSO --- */
+        .progresso-widget {
+            margin: 0.8rem 1rem 1.2rem;
+            background-color: var(--cor-card);
+            border-radius: 16px;
+            padding: 1rem 1.1rem 0.8rem;
+            border: 1px solid var(--cor-borda);
+            flex-shrink: 0;
+        }
+
+        .progresso-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.8rem;
+        }
+
+        .progresso-titulo {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--cor-texto);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progresso-stat {
+            font-size: 0.8rem;
+            color: var(--cor-primaria);
+            font-weight: 600;
+        }
+
+        /* Mini gráfico de barras */
+        .mini-grafico-wrap {
+            position: relative;
+            height: 80px;
+        }
+
+        .mini-grafico {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            height: 62px;
+        }
+
+        .mini-barra-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .mini-barra {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+            transition: height 0.5s ease;
+        }
+
+        .mini-barra-label {
+            font-size: 9px;
+            color: var(--cor-texto-claro);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        /* Linha de objetivo */
+        .mini-obj-wrap {
+            position: absolute;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+        }
+        .mini-obj-linha {
+            flex: 1;
+            height: 1px;
+            border-top: 1.5px dashed #ef4444;
+            opacity: 0.6;
+        }
+        .mini-obj-label {
+            font-size: 9px;
+            color: #ef4444;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+
+        /* Sem dados */
+        .mini-sem-dados {
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-texto-claro);
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html" class="logo">FitTrack</a>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html" class="ativo">Início</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="dieta.html">Dieta</a></li>
-            <li><a href="peso.html">Peso</a></li>
-            <li><a href="macros.html">Macros</a></li>
-            <li><a href="diario.html">Diário</a></li>
-            <li><a href="estatisticas.html">Estatísticas</a></li>
-            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
-        </ul>
-        <div class="navbar-acoes">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <span class="app-logo-text">FitTrack</span>
+        <div class="header-acoes">
             <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
-            <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Abrir menu">
-                <span></span><span></span><span></span>
-            </button>
+            <button class="btn-logout-app" onclick="Auth.logout()">Sair</button>
         </div>
-    </nav>
+    </header>
 
-    <div class="container-inicio">
-        <div class="saudacao">
-            <p class="cumprimento" id="cumprimento">Olá</p>
-            <h1 class="nome-utilizador" id="nome-utilizador">—</h1>
-            <p class="frase-dia" id="frase-dia">—</p>
-        </div>
+    <!-- ===== SAUDAÇÃO ===== -->
+    <div class="app-greeting">
+        <div class="app-greeting-linha1" id="cumprimento">Olá,</div>
+        <div class="app-greeting-nome" id="nome-utilizador">—</div>
+        <div class="app-greeting-frase" id="frase-dia"></div>
+    </div>
 
-        <div class="inicio-acoes">
-            <a href="dashboard.html" class="acao-card">
-                <div class="acao-titulo">Dashboard</div>
-                <div class="acao-desc">Vê o resumo completo do teu dia</div>
-            </a>
-            <a href="dieta.html" class="acao-card">
-                <div class="acao-titulo">Registar refeição</div>
-                <div class="acao-desc">Adiciona o que comeste</div>
-            </a>
-            <a href="peso.html" class="acao-card">
-                <div class="acao-titulo">Pesar-me</div>
-                <div class="acao-desc">Regista o teu peso e medidas</div>
-            </a>
-            <a href="estatisticas.html" class="acao-card">
-                <div class="acao-titulo">Ver progresso</div>
-                <div class="acao-desc">Gráficos e evolução</div>
-            </a>
-        </div>
+    <!-- ===== CARDS DE NAVEGAÇÃO ===== -->
+    <div class="nav-cards" id="nav-cards">
 
-        <div class="inicio-breve" id="inicio-breve" style="display:none;">
-            <div class="breve-item">
-                <span class="breve-label">Hoje</span>
-                <span class="breve-valor"><strong id="breve-cal">0</strong> kcal</span>
+        <a href="dashboard.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #1e3a6e 0%, #2563eb 100%)">
+            <span class="nav-card-icon">📊</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Dashboard</div>
+                <div class="nav-card-desc">Resumo geral do teu dia</div>
             </div>
-            <div class="breve-item">
-                <span class="breve-label">Último peso</span>
-                <span class="breve-valor"><strong id="breve-peso">--</strong> kg</span>
+            <div class="nav-card-stat" id="stat-dashboard"></div>
+        </a>
+
+        <a href="dieta.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #064e3b 0%, #059669 100%)">
+            <span class="nav-card-icon">🥗</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Dieta</div>
+                <div class="nav-card-desc">Refeições e macros</div>
             </div>
-            <div class="breve-item">
-                <span class="breve-label">Água hoje</span>
-                <span class="breve-valor"><strong id="breve-agua">0</strong> ml</span>
+            <div class="nav-card-stat" id="stat-dieta"></div>
+        </a>
+
+        <a href="peso.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)">
+            <span class="nav-card-icon">⚖️</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Peso</div>
+                <div class="nav-card-desc">Composição corporal</div>
+            </div>
+            <div class="nav-card-stat" id="stat-peso"></div>
+        </a>
+
+        <a href="macros.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #3b0764 0%, #7c3aed 100%)">
+            <span class="nav-card-icon">🧮</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Macros</div>
+                <div class="nav-card-desc">Calculadora de calorias</div>
+            </div>
+            <div class="nav-card-stat" id="stat-macros"></div>
+        </a>
+
+        <a href="diario.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #78350f 0%, #d97706 100%)">
+            <span class="nav-card-icon">📔</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Diário</div>
+                <div class="nav-card-desc">Sono, energia e bem-estar</div>
+            </div>
+            <div class="nav-card-stat" id="stat-diario"></div>
+        </a>
+
+        <a href="estatisticas.html" class="nav-card"
+           style="--card-grad: linear-gradient(135deg, #164e63 0%, #0891b2 100%)">
+            <span class="nav-card-icon">📈</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Estatísticas</div>
+                <div class="nav-card-desc">Gráficos e evolução</div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- ===== WIDGET DE PROGRESSO ===== -->
+    <div class="progresso-widget">
+        <div class="progresso-header">
+            <span class="progresso-titulo">Calorias — últimos 7 dias</span>
+            <span class="progresso-stat" id="prog-hoje">Hoje: —</span>
+        </div>
+        <div class="mini-grafico-wrap">
+            <div class="mini-grafico" id="mini-grafico">
+                <div class="mini-sem-dados">Sem dados ainda</div>
+            </div>
+            <div class="mini-obj-wrap" id="mini-obj-wrap" style="display:none;">
+                <div class="mini-obj-linha"></div>
+                <span class="mini-obj-label" id="mini-obj-label">obj</span>
             </div>
         </div>
     </div>
@@ -72,13 +367,10 @@
     <script src="alimentos.js"></script>
     <script src="script.js"></script>
     <script>
-        // Personaliza a página inicial
+        // ===== SAUDAÇÃO =====
         const hora = new Date().getHours();
-        let cumpr = 'Olá';
-        if (hora < 12) cumpr = 'Bom dia';
-        else if (hora < 19) cumpr = 'Boa tarde';
-        else cumpr = 'Boa noite';
-        document.getElementById('cumprimento').textContent = cumpr + ',';
+        let cumpr = hora < 12 ? 'Bom dia,' : hora < 19 ? 'Boa tarde,' : 'Boa noite,';
+        document.getElementById('cumprimento').textContent = cumpr;
         document.getElementById('nome-utilizador').textContent = Auth.actual() || 'convidado';
 
         const frases = [
@@ -89,24 +381,147 @@
             "A consistência vence a intensidade.",
             "Faz por ti. Ninguém o faz por ti.",
             "A única treino mau é o que não fizeste.",
-            "Come bem, dorme bem, treina bem — e confia no processo.",
+            "Come bem, dorme bem, treina bem.",
             "Respira. Hidrata. Move-te.",
-            "Ontem já passou. Amanhã ainda não chegou. Foca-te em hoje."
+            "Foca-te em hoje."
         ];
         const diaAno = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
         document.getElementById('frase-dia').textContent = frases[diaAno % frases.length];
 
-        // Breve resumo (só mostra se houver dados)
-        const refHoje = refeicoes.filter(r => r.data === dataHoje());
+        // ===== STATS NOS CARDS =====
+        const hoje = dataHoje();
+        const refHoje = refeicoes.filter(r => r.data === hoje);
         const calHoje = refHoje.reduce((s, r) => s + r.calorias, 0);
-        const ultimoPeso = registos[0];
         const aguaHoje = aguaML();
-        if (calHoje > 0 || ultimoPeso || aguaHoje > 0) {
-            document.getElementById('inicio-breve').style.display = 'flex';
-            document.getElementById('breve-cal').textContent = calHoje.toFixed(0);
-            document.getElementById('breve-peso').textContent = ultimoPeso ? ultimoPeso.peso : '--';
-            document.getElementById('breve-agua').textContent = aguaHoje;
+        const ultimoPeso = registos[0];
+
+        if (calHoje > 0) {
+            document.getElementById('stat-dieta').textContent = calHoje + ' kcal';
+            document.getElementById('stat-dashboard').textContent = calHoje + ' kcal';
         }
+        if (ultimoPeso) {
+            document.getElementById('stat-peso').textContent = ultimoPeso.peso + ' kg';
+        }
+        if (objetivoCalorias) {
+            document.getElementById('stat-macros').textContent = objetivoCalorias + ' kcal';
+        }
+        const diarioHoje = diario[hoje];
+        if (diarioHoje && diarioHoje.energia) {
+            document.getElementById('stat-diario').textContent = 'Energia: ' + diarioHoje.energia + '/10';
+        }
+
+        // ===== EFEITO FOCO NOS CARDS =====
+        const cards = document.querySelectorAll('.nav-card');
+        const cardsWrap = document.getElementById('nav-cards');
+
+        cards.forEach(card => {
+            card.addEventListener('touchstart', () => {
+                cardsWrap.classList.add('tem-focado');
+                cards.forEach(c => c.classList.remove('focado'));
+                card.classList.add('focado');
+            }, { passive: true });
+
+            ['touchend', 'touchcancel'].forEach(evt => {
+                card.addEventListener(evt, () => {
+                    setTimeout(() => {
+                        cardsWrap.classList.remove('tem-focado');
+                        cards.forEach(c => c.classList.remove('focado'));
+                    }, 350);
+                });
+            });
+
+            // Para mouse (desktop debug)
+            card.addEventListener('mousedown', () => {
+                cardsWrap.classList.add('tem-focado');
+                cards.forEach(c => c.classList.remove('focado'));
+                card.classList.add('focado');
+            });
+            card.addEventListener('mouseup', () => {
+                setTimeout(() => {
+                    cardsWrap.classList.remove('tem-focado');
+                    cards.forEach(c => c.classList.remove('focado'));
+                }, 350);
+            });
+            card.addEventListener('mouseleave', () => {
+                if (card.classList.contains('focado')) {
+                    cardsWrap.classList.remove('tem-focado');
+                    cards.forEach(c => c.classList.remove('focado'));
+                }
+            });
+        });
+
+        // ===== MINI GRÁFICO DE BARRAS =====
+        function renderMiniGrafico() {
+            const container = document.getElementById('mini-grafico');
+            const objWrap = document.getElementById('mini-obj-wrap');
+            const progHoje = document.getElementById('prog-hoje');
+            if (!container) return;
+
+            const dias = [];
+            let maxCal = objetivoCalorias || 2000;
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const ds = d.toISOString().split('T')[0];
+                const refs = refeicoes.filter(r => r.data === ds);
+                const cal = refs.reduce((s, r) => s + r.calorias, 0);
+                const label = d.toLocaleDateString('pt-PT', { weekday: 'short' })
+                               .replace('.', '').slice(0, 1).toUpperCase();
+                if (cal > maxCal) maxCal = cal;
+                dias.push({ cal, label, isHoje: i === 0 });
+            }
+
+            const totalCal = dias.reduce((s, d) => s + d.cal, 0);
+            if (totalCal === 0) {
+                container.innerHTML = '<div class="mini-sem-dados">Ainda sem dados esta semana</div>';
+                if (objWrap) objWrap.style.display = 'none';
+                if (progHoje) progHoje.textContent = 'Hoje: —';
+                return;
+            }
+
+            const HEIGHT = 62; // px, altura total das barras
+
+            container.innerHTML = dias.map(d => {
+                const h = d.cal > 0 ? Math.max(3, Math.round((d.cal / maxCal) * HEIGHT)) : 0;
+                let cor;
+                if (d.isHoje) {
+                    cor = 'var(--cor-primaria)';
+                } else if (d.cal >= objetivoCalorias) {
+                    cor = 'var(--cor-secundaria)';
+                } else if (d.cal > 0) {
+                    cor = 'var(--cor-borda)';
+                } else {
+                    cor = 'transparent';
+                }
+                return `
+                    <div class="mini-barra-wrap" title="${d.label}: ${d.cal} kcal">
+                        <div class="mini-barra" style="height:${h}px; background:${cor};"></div>
+                        <span class="mini-barra-label">${d.label}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Linha de objetivo
+            if (objWrap && objetivoCalorias > 0 && maxCal > 0) {
+                const pctObj = (objetivoCalorias / maxCal);
+                const topPx = HEIGHT - Math.round(pctObj * HEIGHT);
+                objWrap.style.display = 'flex';
+                objWrap.style.top = topPx + 'px';
+                const label = document.getElementById('mini-obj-label');
+                if (label) label.textContent = objetivoCalorias + ' kcal';
+            }
+
+            // Stat de hoje
+            const calhoje = dias[dias.length - 1].cal;
+            if (progHoje) {
+                progHoje.textContent = calhoje > 0
+                    ? `Hoje: ${calhoje} / ${objetivoCalorias} kcal`
+                    : 'Hoje: sem registos';
+            }
+        }
+
+        renderMiniGrafico();
     </script>
 </body>
 </html>

@@ -2,30 +2,16 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FitTrack - Calculadora de Macros</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html" class="logo">FitTrack</a>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="dieta.html">Dieta</a></li>
-            <li><a href="peso.html">Peso</a></li>
-            <li><a href="macros.html" class="ativo">Macros</a></li>
-            <li><a href="diario.html">Diário</a></li>
-            <li><a href="estatisticas.html">Estatísticas</a></li>
-            <li><a href="#" onclick="Auth.logout(); return false;" class="nav-logout">Sair</a></li>
-        </ul>
-        <div class="navbar-acoes">
-            <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
-            <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Abrir menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
+    <div class="app-bar">
+        <a href="index.html" class="app-bar-back" aria-label="Voltar">&#8592;</a>
+        <span class="app-bar-titulo">Calculadora de Macros</span>
+        <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
+    </div>
 
     <div class="container">
         <h1 class="titulo-pagina">Calculadora de Macros Diárias</h1>
