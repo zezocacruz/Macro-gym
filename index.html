@@ -26,59 +26,92 @@
             padding: 1rem 1.2rem 0.6rem;
             flex-shrink: 0;
         }
-
         .app-logo-text {
             font-size: 1.6rem;
             font-weight: 800;
             color: var(--cor-primaria);
             letter-spacing: -0.5px;
-            text-decoration: none;
             cursor: default;
         }
-
         .header-acoes {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-
-        .btn-logout-app {
+        .btn-menu-home {
             background: transparent;
             border: 1px solid var(--cor-borda);
-            color: var(--cor-texto-claro);
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.82rem;
+            color: var(--cor-texto);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
-        }
-        .btn-logout-app:hover, .btn-logout-app:active {
-            background: rgba(239,68,68,0.1);
-            border-color: #ef4444;
-            color: #ef4444;
-        }
-
-        /* --- SAUDAÇÃO --- */
-        .app-greeting {
-            padding: 0.4rem 1.2rem 0.8rem;
             flex-shrink: 0;
         }
-        .app-greeting-linha1 {
-            font-size: 0.95rem;
-            color: var(--cor-texto-claro);
+        .btn-menu-home:hover, .btn-menu-home:active { background-color: var(--cor-borda); }
+
+        /* --- RESUMO DE HOJE --- */
+        .resumo-hoje {
+            margin: 0.6rem 1rem 0.8rem;
+            background-color: var(--cor-card);
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--cor-borda);
+            flex-shrink: 0;
         }
-        .app-greeting-nome {
-            font-size: 1.4rem;
+        .resumo-titulo {
+            font-size: 0.72rem;
             font-weight: 700;
-            color: var(--cor-texto);
-            line-height: 1.2;
-        }
-        .app-greeting-frase {
-            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
             color: var(--cor-texto-claro);
-            font-style: italic;
-            margin-top: 0.2rem;
+            margin-bottom: 0.7rem;
         }
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+            margin-bottom: 0.6rem;
+        }
+        .resumo-item {
+            background-color: var(--cor-input);
+            border-radius: 10px;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid var(--cor-borda);
+        }
+        .resumo-item-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            color: var(--cor-texto-claro);
+            letter-spacing: 0.3px;
+        }
+        .resumo-item-valor {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--cor-primaria);
+            line-height: 1.15;
+            margin-top: 0.1rem;
+        }
+        .resumo-item-unidade { font-size: 0.72rem; color: var(--cor-texto-claro); font-weight: 400; }
+
+        .resumo-macros {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .resumo-macro {
+            border-radius: 8px;
+            padding: 0.4rem 0.5rem;
+            text-align: center;
+            color: white;
+        }
+        .resumo-macro-label { font-size: 0.62rem; text-transform: uppercase; opacity: 0.9; }
+        .resumo-macro-val   { font-size: 1rem; font-weight: 700; }
 
         /* --- CARDS DE NAVEGAÇÃO --- */
         .nav-cards {
@@ -88,82 +121,44 @@
             padding: 0 1rem;
             flex: 1;
         }
-
         .nav-card {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0 1.3rem;
-            border-radius: 16px;
+            padding: 0 1.6rem;
+            border-radius: 40px;
             text-decoration: none;
             color: white;
-            background: var(--card-grad);
+            background-size: cover;
+            background-position: center;
             flex: 1;
-            min-height: 72px;
+            min-height: 68px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        filter 0.18s ease;
+            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
             z-index: 1;
             -webkit-user-select: none;
             user-select: none;
         }
-
-        /* Brilho decorativo no canto */
         .nav-card::after {
             content: '';
             position: absolute;
-            top: -30%;
-            right: -10%;
-            width: 120px;
-            height: 120px;
+            top: -30%; right: -10%;
+            width: 120px; height: 120px;
             background: rgba(255,255,255,0.08);
             border-radius: 50%;
             pointer-events: none;
         }
+        .nav-card-icon  { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+        .nav-card-info  { flex: 1; }
+        .nav-card-titulo { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+        .nav-card-desc  { font-size: 0.8rem; opacity: 0.85; margin-top: 0.1rem; }
+        .nav-card-stat  { font-size: 0.85rem; font-weight: 600; opacity: 0.9; flex-shrink: 0; text-align: right; }
 
-        .nav-card-icon {
-            font-size: 2rem;
-            flex-shrink: 0;
-            line-height: 1;
-        }
+        .nav-cards.tem-focado .nav-card:not(.focado) { transform: scale(0.96); filter: brightness(0.72); }
+        .nav-cards.tem-focado .nav-card.focado        { transform: scale(1.04); filter: brightness(1.08); z-index: 10; }
 
-        .nav-card-info {
-            flex: 1;
-        }
-
-        .nav-card-titulo {
-            font-size: 1.05rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .nav-card-desc {
-            font-size: 0.8rem;
-            opacity: 0.85;
-            margin-top: 0.1rem;
-        }
-
-        .nav-card-stat {
-            font-size: 0.85rem;
-            font-weight: 600;
-            opacity: 0.9;
-            flex-shrink: 0;
-            text-align: right;
-        }
-
-        /* Efeito foco — card pressionado fica maior, outros ficam menores */
-        .nav-cards.tem-focado .nav-card:not(.focado) {
-            transform: scale(0.96);
-            filter: brightness(0.72);
-        }
-        .nav-cards.tem-focado .nav-card.focado {
-            transform: scale(1.04);
-            filter: brightness(1.08);
-            z-index: 10;
-        }
-
-        /* --- WIDGET DE PROGRESSO --- */
+        /* --- WIDGET PROGRESSO --- */
         .progresso-widget {
             margin: 0.8rem 1rem 1.2rem;
             background-color: var(--cor-card);
@@ -172,96 +167,142 @@
             border: 1px solid var(--cor-borda);
             flex-shrink: 0;
         }
-
         .progresso-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 0.8rem;
         }
+        .progresso-titulo { font-size: 0.85rem; font-weight: 600; color: var(--cor-texto); text-transform: uppercase; letter-spacing: 0.5px; }
+        .progresso-stat   { font-size: 0.8rem; color: var(--cor-primaria); font-weight: 600; }
 
-        .progresso-titulo {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--cor-texto);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .mini-grafico-wrap { position: relative; height: 80px; }
+        .mini-grafico { display: flex; align-items: flex-end; gap: 5px; height: 62px; }
+        .mini-barra-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
+        .mini-barra { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.5s ease; }
+        .mini-barra-label { font-size: 9px; color: var(--cor-texto-claro); text-transform: uppercase; margin-top: 2px; }
+
+        .mini-obj-wrap  { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 4px; pointer-events: none; }
+        .mini-obj-linha { flex: 1; height: 1px; border-top: 1.5px dashed #ef4444; opacity: 0.6; }
+        .mini-obj-label { font-size: 9px; color: #ef4444; opacity: 0.8; white-space: nowrap; }
+        .mini-sem-dados { height: 62px; display: flex; align-items: center; justify-content: center; color: var(--cor-texto-claro); font-size: 0.85rem; }
+
+        /* ===== DRAWER ===== */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
+        .drawer-overlay.aberto { opacity: 1; pointer-events: all; }
 
-        .progresso-stat {
-            font-size: 0.8rem;
-            color: var(--cor-primaria);
-            font-weight: 600;
-        }
-
-        /* Mini gráfico de barras */
-        .mini-grafico-wrap {
-            position: relative;
-            height: 80px;
-        }
-
-        .mini-grafico {
-            display: flex;
-            align-items: flex-end;
-            gap: 5px;
-            height: 62px;
-        }
-
-        .mini-barra-wrap {
-            flex: 1;
+        .drawer {
+            position: fixed;
+            top: 0; right: 0;
+            width: min(100vw, 430px);
+            height: 100vh;
+            background-color: var(--cor-fundo);
+            z-index: 201;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
+        }
+        .drawer.aberto { transform: translateX(0); }
+
+        .drawer-header {
+            display: flex;
             align-items: center;
-            gap: 3px;
-            height: 100%;
-            justify-content: flex-end;
+            justify-content: space-between;
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--cor-borda);
+            background-color: var(--cor-card);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: background-color 0.3s;
         }
-
-        .mini-barra {
-            width: 100%;
-            border-radius: 4px 4px 0 0;
-            min-height: 2px;
-            transition: height 0.5s ease;
+        .drawer-titulo { font-size: 1rem; font-weight: 700; color: var(--cor-texto); }
+        .drawer-fechar {
+            background: transparent;
+            border: 1px solid var(--cor-borda);
+            color: var(--cor-texto);
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
         }
+        .drawer-fechar:hover, .drawer-fechar:active { background-color: var(--cor-borda); }
 
-        .mini-barra-label {
-            font-size: 9px;
-            color: var(--cor-texto-claro);
+        .drawer-content { padding: 1rem; flex: 1; }
+
+        .drawer-secao {
+            background-color: var(--cor-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--cor-borda);
+            transition: background-color 0.3s;
+        }
+        .drawer-secao-titulo {
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        /* Linha de objetivo */
-        .mini-obj-wrap {
-            position: absolute;
-            left: 0;
-            right: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            pointer-events: none;
-        }
-        .mini-obj-linha {
-            flex: 1;
-            height: 1px;
-            border-top: 1.5px dashed #ef4444;
-            opacity: 0.6;
-        }
-        .mini-obj-label {
-            font-size: 9px;
-            color: #ef4444;
-            opacity: 0.8;
-            white-space: nowrap;
-        }
-
-        /* Sem dados */
-        .mini-sem-dados {
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            letter-spacing: 0.5px;
             color: var(--cor-texto-claro);
-            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Perfil */
+        .perfil-avatar {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cor-primaria), #7c3aed);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .perfil-nome { font-size: 1.15rem; font-weight: 700; color: var(--cor-texto); }
+        .perfil-sub  { font-size: 0.78rem; color: var(--cor-texto-claro); margin-top: 0.15rem; }
+
+        .drawer-logout {
+            width: 100%;
+            margin-top: 0.7rem;
+            background: transparent;
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #ef4444;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .drawer-logout:hover, .drawer-logout:active { background: rgba(239,68,68,0.1); }
+
+        /* Link de página no drawer */
+        .drawer-link-pagina {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 0.8rem;
+            background-color: var(--cor-input);
+            border: 1px solid var(--cor-borda);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--cor-texto);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .drawer-link-pagina:hover, .drawer-link-pagina:active {
+            background-color: var(--cor-borda);
         }
     </style>
 </head>
@@ -272,76 +313,91 @@
         <span class="app-logo-text">FitTrack</span>
         <div class="header-acoes">
             <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
-            <button class="btn-logout-app" onclick="Auth.logout()">Sair</button>
+            <button class="btn-menu-home" onclick="abrirDrawer()" aria-label="Abrir menu">☰</button>
         </div>
     </header>
 
-    <!-- ===== SAUDAÇÃO ===== -->
-    <div class="app-greeting">
-        <div class="app-greeting-linha1" id="cumprimento">Olá,</div>
-        <div class="app-greeting-nome" id="nome-utilizador">—</div>
-        <div class="app-greeting-frase" id="frase-dia"></div>
+    <!-- ===== RESUMO DE HOJE ===== -->
+    <div class="resumo-hoje">
+        <div class="resumo-titulo">Hoje</div>
+        <div class="resumo-grid">
+            <div class="resumo-item">
+                <div class="resumo-item-label">Calorias</div>
+                <div class="resumo-item-valor" id="res-cal-hoje">0 <span class="resumo-item-unidade">kcal</span></div>
+            </div>
+            <div class="resumo-item">
+                <div class="resumo-item-label">Objetivo</div>
+                <div class="resumo-item-valor" id="res-obj-hoje">— <span class="resumo-item-unidade">kcal</span></div>
+            </div>
+            <div class="resumo-item">
+                <div class="resumo-item-label">Peso atual</div>
+                <div class="resumo-item-valor" id="res-peso-hoje">— <span class="resumo-item-unidade">kg</span></div>
+            </div>
+            <div class="resumo-item">
+                <div class="resumo-item-label">Massa magra</div>
+                <div class="resumo-item-valor" id="res-magra-hoje">— <span class="resumo-item-unidade">kg</span></div>
+            </div>
+        </div>
+        <div class="resumo-macros">
+            <div class="resumo-macro" style="background-color:var(--cor-proteina);">
+                <div class="resumo-macro-label">Proteína</div>
+                <div class="resumo-macro-val" id="res-prot-hoje">0g</div>
+            </div>
+            <div class="resumo-macro" style="background-color:var(--cor-hidratos);">
+                <div class="resumo-macro-label">Hidratos</div>
+                <div class="resumo-macro-val" id="res-hid-hoje">0g</div>
+            </div>
+            <div class="resumo-macro" style="background-color:var(--cor-gordura);">
+                <div class="resumo-macro-label">Gordura</div>
+                <div class="resumo-macro-val" id="res-gord-hoje">0g</div>
+            </div>
+        </div>
     </div>
 
     <!-- ===== CARDS DE NAVEGAÇÃO ===== -->
     <div class="nav-cards" id="nav-cards">
 
-        <a href="dashboard.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #1e3a6e 0%, #2563eb 100%)">
-            <span class="nav-card-icon">📊</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Dashboard</div>
-                <div class="nav-card-desc">Resumo geral do teu dia</div>
-            </div>
-            <div class="nav-card-stat" id="stat-dashboard"></div>
-        </a>
-
-        <a href="dieta.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #064e3b 0%, #059669 100%)">
+        <a href="refeicoes.html" class="nav-card"
+           style="background: linear-gradient(135deg, rgba(2,44,34,0.82) 0%, rgba(5,150,105,0.48) 100%), url('https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
             <span class="nav-card-icon">🥗</span>
             <div class="nav-card-info">
-                <div class="nav-card-titulo">Dieta</div>
-                <div class="nav-card-desc">Refeições e macros</div>
+                <div class="nav-card-titulo">Refeições</div>
             </div>
             <div class="nav-card-stat" id="stat-dieta"></div>
         </a>
 
+        <a href="agua.html" class="nav-card"
+           style="background: linear-gradient(135deg, rgba(12,26,58,0.82) 0%, rgba(14,165,233,0.48) 100%), url('https://images.unsplash.com/photo-1650394696192-51c05b02e203?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
+            <span class="nav-card-icon">💧</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Água</div>
+            </div>
+            <div class="nav-card-stat" id="stat-agua"></div>
+        </a>
+
+        <a href="sono.html" class="nav-card"
+           style="background: linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(109,40,217,0.48) 100%), url('https://images.unsplash.com/photo-1777277014866-030033488cee?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
+            <span class="nav-card-icon">😴</span>
+            <div class="nav-card-info">
+                <div class="nav-card-titulo">Sono</div>
+            </div>
+            <div class="nav-card-stat" id="stat-sono"></div>
+        </a>
+
         <a href="peso.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)">
+           style="background: linear-gradient(135deg, rgba(26,10,0,0.82) 0%, rgba(234,88,12,0.48) 100%), url('https://images.unsplash.com/photo-1678967633223-050cf8e1c55c?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
             <span class="nav-card-icon">⚖️</span>
             <div class="nav-card-info">
-                <div class="nav-card-titulo">Peso</div>
-                <div class="nav-card-desc">Composição corporal</div>
+                <div class="nav-card-titulo">Composição Corporal</div>
             </div>
             <div class="nav-card-stat" id="stat-peso"></div>
         </a>
 
-        <a href="macros.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #3b0764 0%, #7c3aed 100%)">
-            <span class="nav-card-icon">🧮</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Macros</div>
-                <div class="nav-card-desc">Calculadora de calorias</div>
-            </div>
-            <div class="nav-card-stat" id="stat-macros"></div>
-        </a>
-
-        <a href="diario.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #78350f 0%, #d97706 100%)">
-            <span class="nav-card-icon">📔</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Diário</div>
-                <div class="nav-card-desc">Sono, energia e bem-estar</div>
-            </div>
-            <div class="nav-card-stat" id="stat-diario"></div>
-        </a>
-
         <a href="estatisticas.html" class="nav-card"
-           style="--card-grad: linear-gradient(135deg, #164e63 0%, #0891b2 100%)">
+           style="background: linear-gradient(135deg, rgba(26,10,24,0.82) 0%, rgba(219,39,119,0.48) 100%), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
             <span class="nav-card-icon">📈</span>
             <div class="nav-card-info">
                 <div class="nav-card-titulo">Estatísticas</div>
-                <div class="nav-card-desc">Gráficos e evolução</div>
             </div>
         </a>
 
@@ -364,51 +420,82 @@
         </div>
     </div>
 
+    <!-- ===== DRAWER (Menu) ===== -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="fecharDrawer()"></div>
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <span class="drawer-titulo">Menu</span>
+            <button class="drawer-fechar" onclick="fecharDrawer()" aria-label="Fechar menu">✕</button>
+        </div>
+        <div class="drawer-content">
+
+            <!-- PERFIL -->
+            <div class="drawer-secao">
+                <div class="drawer-secao-titulo">Perfil</div>
+                <div class="perfil-avatar">👤</div>
+                <div class="perfil-nome" id="drawer-nome">—</div>
+                <div class="perfil-sub">FitTrack Member</div>
+                <button class="drawer-logout" onclick="Auth.logout()">Sair da conta</button>
+            </div>
+
+            <!-- MACROS -->
+            <div class="drawer-secao">
+                <div class="drawer-secao-titulo">Macros</div>
+                <a href="macros.html" class="drawer-link-pagina" onclick="fecharDrawer()">
+                    🧮 Calculadora de Macros
+                    <span style="margin-left:auto; opacity:0.5;">→</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
     <script src="alimentos.js"></script>
     <script src="script.js"></script>
     <script>
-        // ===== SAUDAÇÃO =====
-        const hora = new Date().getHours();
-        let cumpr = hora < 12 ? 'Bom dia,' : hora < 19 ? 'Boa tarde,' : 'Boa noite,';
-        document.getElementById('cumprimento').textContent = cumpr;
-        document.getElementById('nome-utilizador').textContent = Auth.actual() || 'convidado';
+        // ===== NOME NO DRAWER =====
+        const nomeUtilizador = Auth.actual() || 'convidado';
+        document.getElementById('drawer-nome').textContent = nomeUtilizador;
 
-        const frases = [
-            "Um dia de cada vez. Progresso, não perfeição.",
-            "O corpo consegue quase tudo. É a mente que precisas de convencer.",
-            "Hoje é um bom dia para te cuidares.",
-            "Pequenos hábitos, grandes resultados.",
-            "A consistência vence a intensidade.",
-            "Faz por ti. Ninguém o faz por ti.",
-            "A única treino mau é o que não fizeste.",
-            "Come bem, dorme bem, treina bem.",
-            "Respira. Hidrata. Move-te.",
-            "Foca-te em hoje."
-        ];
-        const diaAno = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-        document.getElementById('frase-dia').textContent = frases[diaAno % frases.length];
-
-        // ===== STATS NOS CARDS =====
+        // ===== RESUMO DE HOJE =====
         const hoje = dataHoje();
         const refHoje = refeicoes.filter(r => r.data === hoje);
-        const calHoje = refHoje.reduce((s, r) => s + r.calorias, 0);
-        const aguaHoje = aguaML();
+        const calHoje  = refHoje.reduce((s, r) => s + (r.calorias || 0), 0);
+        const protHoje = refHoje.reduce((s, r) => s + (r.proteina || 0), 0);
+        const hidHoje  = refHoje.reduce((s, r) => s + (r.hidratos || 0), 0);
+        const gordHoje = refHoje.reduce((s, r) => s + (r.gordura  || 0), 0);
         const ultimoPeso = registos[0];
 
-        if (calHoje > 0) {
-            document.getElementById('stat-dieta').textContent = calHoje + ' kcal';
-            document.getElementById('stat-dashboard').textContent = calHoje + ' kcal';
+        document.getElementById('res-cal-hoje').innerHTML =
+            `${calHoje} <span class="resumo-item-unidade">kcal</span>`;
+        if (objetivoCalorias) {
+            document.getElementById('res-obj-hoje').innerHTML =
+                `${objetivoCalorias} <span class="resumo-item-unidade">kcal</span>`;
         }
         if (ultimoPeso) {
-            document.getElementById('stat-peso').textContent = ultimoPeso.peso + ' kg';
+            document.getElementById('res-peso-hoje').innerHTML =
+                `${ultimoPeso.peso} <span class="resumo-item-unidade">kg</span>`;
+            if (ultimoPeso.massaMagra) {
+                document.getElementById('res-magra-hoje').innerHTML =
+                    `${ultimoPeso.massaMagra} <span class="resumo-item-unidade">kg</span>`;
+            }
         }
-        if (objetivoCalorias) {
-            document.getElementById('stat-macros').textContent = objetivoCalorias + ' kcal';
-        }
+        document.getElementById('res-prot-hoje').textContent = Math.round(protHoje) + 'g';
+        document.getElementById('res-hid-hoje').textContent  = Math.round(hidHoje)  + 'g';
+        document.getElementById('res-gord-hoje').textContent = Math.round(gordHoje) + 'g';
+
+        // ===== STATS NOS CARDS =====
+        if (calHoje > 0) document.getElementById('stat-dieta').textContent = calHoje + ' kcal';
+        if (ultimoPeso)  document.getElementById('stat-peso').textContent  = ultimoPeso.peso + ' kg';
+
+        // Água
+        const mlHoje = aguaML();
+        if (mlHoje > 0) document.getElementById('stat-agua').textContent = mlHoje + ' ml';
+
+        // Sono
         const diarioHoje = diario[hoje];
-        if (diarioHoje && diarioHoje.energia) {
-            document.getElementById('stat-diario').textContent = 'Energia: ' + diarioHoje.energia + '/10';
-        }
+        if (diarioHoje && diarioHoje.sono)
+            document.getElementById('stat-sono').textContent = diarioHoje.sono + 'h sono';
 
         // ===== EFEITO FOCO NOS CARDS =====
         const cards = document.querySelectorAll('.nav-card');
@@ -420,7 +507,6 @@
                 cards.forEach(c => c.classList.remove('focado'));
                 card.classList.add('focado');
             }, { passive: true });
-
             ['touchend', 'touchcancel'].forEach(evt => {
                 card.addEventListener(evt, () => {
                     setTimeout(() => {
@@ -429,8 +515,6 @@
                     }, 350);
                 });
             });
-
-            // Para mouse (desktop debug)
             card.addEventListener('mousedown', () => {
                 cardsWrap.classList.add('tem-focado');
                 cards.forEach(c => c.classList.remove('focado'));
@@ -450,11 +534,11 @@
             });
         });
 
-        // ===== MINI GRÁFICO DE BARRAS =====
+        // ===== MINI GRÁFICO =====
         function renderMiniGrafico() {
             const container = document.getElementById('mini-grafico');
-            const objWrap = document.getElementById('mini-obj-wrap');
-            const progHoje = document.getElementById('prog-hoje');
+            const objWrap   = document.getElementById('mini-obj-wrap');
+            const progHoje  = document.getElementById('prog-hoje');
             if (!container) return;
 
             const dias = [];
@@ -480,48 +564,47 @@
                 return;
             }
 
-            const HEIGHT = 62; // px, altura total das barras
-
+            const HEIGHT = 62;
             container.innerHTML = dias.map(d => {
                 const h = d.cal > 0 ? Math.max(3, Math.round((d.cal / maxCal) * HEIGHT)) : 0;
-                let cor;
-                if (d.isHoje) {
-                    cor = 'var(--cor-primaria)';
-                } else if (d.cal >= objetivoCalorias) {
-                    cor = 'var(--cor-secundaria)';
-                } else if (d.cal > 0) {
-                    cor = 'var(--cor-borda)';
-                } else {
-                    cor = 'transparent';
-                }
-                return `
-                    <div class="mini-barra-wrap" title="${d.label}: ${d.cal} kcal">
-                        <div class="mini-barra" style="height:${h}px; background:${cor};"></div>
-                        <span class="mini-barra-label">${d.label}</span>
-                    </div>
-                `;
+                let cor = d.isHoje ? 'var(--cor-primaria)'
+                        : d.cal >= objetivoCalorias ? 'var(--cor-secundaria)'
+                        : d.cal > 0 ? 'var(--cor-borda)' : 'transparent';
+                return `<div class="mini-barra-wrap" title="${d.label}: ${d.cal} kcal">
+                    <div class="mini-barra" style="height:${h}px; background:${cor};"></div>
+                    <span class="mini-barra-label">${d.label}</span>
+                </div>`;
             }).join('');
 
-            // Linha de objetivo
             if (objWrap && objetivoCalorias > 0 && maxCal > 0) {
-                const pctObj = (objetivoCalorias / maxCal);
-                const topPx = HEIGHT - Math.round(pctObj * HEIGHT);
+                const topPx = HEIGHT - Math.round((objetivoCalorias / maxCal) * HEIGHT);
                 objWrap.style.display = 'flex';
                 objWrap.style.top = topPx + 'px';
-                const label = document.getElementById('mini-obj-label');
-                if (label) label.textContent = objetivoCalorias + ' kcal';
+                const lbl = document.getElementById('mini-obj-label');
+                if (lbl) lbl.textContent = objetivoCalorias + ' kcal';
             }
 
-            // Stat de hoje
-            const calhoje = dias[dias.length - 1].cal;
+            const calHojeGraf = dias[dias.length - 1].cal;
             if (progHoje) {
-                progHoje.textContent = calhoje > 0
-                    ? `Hoje: ${calhoje} / ${objetivoCalorias} kcal`
+                progHoje.textContent = calHojeGraf > 0
+                    ? `Hoje: ${calHojeGraf} / ${objetivoCalorias} kcal`
                     : 'Hoje: sem registos';
             }
         }
-
         renderMiniGrafico();
+
+        // ===== DRAWER =====
+        function abrirDrawer() {
+            document.getElementById('drawer').classList.add('aberto');
+            document.getElementById('drawer-overlay').classList.add('aberto');
+            document.body.style.overflow = 'hidden';
+        }
+        function fecharDrawer() {
+            document.getElementById('drawer').classList.remove('aberto');
+            document.getElementById('drawer-overlay').classList.remove('aberto');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharDrawer(); });
     </script>
 </body>
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FitTrack - Água</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-bar">
+        <a href="index.html" class="app-bar-back" aria-label="Voltar">&#8592;</a>
+        <span class="app-bar-titulo">Água</span>
+        <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Água de hoje</h2>
+            <div class="agua-bloco">
+                <div class="agua-display">
+                    <div class="valor-grande"><span data-agua="ml">0</span> / <span data-agua="objetivo-ml">2000</span> ml</div>
+                    <div class="subvalor"><span data-agua="copos">0</span> copos de 250ml (meta: <span data-agua="objetivo">8</span> copos)</div>
+                    <div class="barra-progresso" style="margin-top:0.8rem;">
+                        <div class="barra-preenchida" data-agua="barra" style="background-color: var(--cor-secundaria); width:0%;"></div>
+                    </div>
+                </div>
+                <div class="agua-botoes">
+                    <button class="btn btn-secundario" onclick="incAgua()">+ Copo (250ml)</button>
+                    <button class="btn btn-perigo" onclick="decAgua()">− Copo</button>
+                    <button class="btn btn-perigo" onclick="resetAgua()" style="opacity:0.7;">Reset do dia</button>
+                </div>
+            </div>
+            <div class="agua-custom">
+                <div class="agua-custom-grupo">
+                    <label>Adicionar quantidade personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-custom-input" min="1" placeholder="Ex: 500 (garrafa)">
+                        <button class="btn btn-secundario" onclick="adicionarAguaCustom()">+ Adicionar</button>
+                    </div>
+                </div>
+                <div class="agua-custom-grupo">
+                    <label>Meta diária personalizada (ml)</label>
+                    <div class="input-com-botao">
+                        <input type="number" id="agua-objetivo-input" min="100" placeholder="Ex: 2500">
+                        <button class="btn btn-primario" onclick="definirObjetivoAgua()">Guardar meta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

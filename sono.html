@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FitTrack - Sono</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-bar">
+        <a href="index.html" class="app-bar-back" aria-label="Voltar">&#8592;</a>
+        <span class="app-bar-titulo">Sono & Bem-estar</span>
+        <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Registo do dia</h2>
+            <form class="formulario" id="form-diario">
+                <div class="form-linha">
+                    <div class="form-grupo">
+                        <label for="data-diario">Data</label>
+                        <input type="date" id="data-diario" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="sono">Horas de sono</label>
+                        <input type="number" id="sono" step="0.5" min="0" max="24" placeholder="Ex: 7.5">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="energia">Energia (1-10)</label>
+                        <input type="number" id="energia" min="1" max="10" placeholder="Ex: 8">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="humor">Humor</label>
+                        <select id="humor">
+                            <option value="otimo">Ótimo</option>
+                            <option value="bom">Bom</option>
+                            <option value="neutro" selected>Neutro</option>
+                            <option value="mau">Mau</option>
+                            <option value="pessimo">Péssimo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grupo">
+                    <label for="notas">Notas</label>
+                    <textarea id="notas" rows="3" placeholder="Como correu o dia? Treino, stress, refeições..." style="padding:0.7rem; border:1px solid var(--cor-borda); border-radius:8px; background-color:var(--cor-input); color:var(--cor-texto); font-family:inherit; font-size:1rem; resize:vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primario">Guardar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Histórico</h2>
+            <div id="historico-diario"></div>
+        </div>
+    </div>
+
+    <script src="alimentos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
