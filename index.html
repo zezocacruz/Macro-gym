@@ -68,7 +68,7 @@
 
         /* ===== ÁREA DE SCROLL ===== */
         .spa-main {
-            margin-top: 57px;
+            margin-top: 66px;
             margin-bottom: 72px;
         }
 
@@ -111,11 +111,11 @@
         /* ===== SECÇÕES ===== */
         .secao {
             margin-top: 0.6rem;
-            scroll-margin-top: 57px;
+            scroll-margin-top: 66px;
         }
         .secao-header {
             position: sticky;
-            top: 57px;
+            top: 66px;
             z-index: 50;
             background-color: var(--cor-fundo);
             display: flex;
@@ -257,9 +257,8 @@
 
 <!-- ===== HEADER FIXO ===== -->
 <header class="spa-header">
-    <span class="spa-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">FitTrack</span>
+    <img src="fittrack_logo.png" alt="FitTrack" class="spa-logo-img" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="height:46px; cursor:pointer; display:block;">
     <div class="spa-header-acoes">
-        <button class="spa-btn-icon btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
         <button class="spa-btn-icon" onclick="abrirDrawer()" aria-label="Abrir menu">☰</button>
     </div>
 </header>
@@ -270,7 +269,11 @@
     <!-- RESUMO DE HOJE -->
     <div id="inicio" style="padding-top:0.2rem;">
         <div class="resumo-hoje">
-            <div class="resumo-titulo">Hoje</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.7rem;">
+                <button onclick="navegarResumo(-1)" style="background:transparent; border:none; color:var(--cor-texto-claro); font-size:1.2rem; cursor:pointer; padding:0 0.3rem; line-height:1;">‹</button>
+                <div class="resumo-titulo" id="resumo-titulo-data" style="margin-bottom:0;">Hoje</div>
+                <button onclick="navegarResumo(1)" id="btn-resumo-proximo" style="background:transparent; border:none; color:var(--cor-texto-claro); font-size:1.2rem; cursor:pointer; padding:0 0.3rem; line-height:1; opacity:0.3;" disabled>›</button>
+            </div>
             <div class="resumo-grid">
                 <div class="resumo-item">
                     <div class="resumo-item-label">Calorias</div>
@@ -491,19 +494,41 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Resumo do Dia</h2>
-                <div class="macros">
-                    <div class="macro macro-proteina"><div class="nome">Proteína</div><div class="valor" id="total-proteina">0g</div></div>
-                    <div class="macro macro-hidratos"><div class="nome">Hidratos</div><div class="valor" id="total-hidratos">0g</div></div>
-                    <div class="macro macro-gordura"><div class="nome">Gordura</div><div class="valor" id="total-gordura">0g</div></div>
+            <!-- IDs ocultos usados pelo script.js para o resumo de calorias/macros -->
+            <div style="display:none;" aria-hidden="true">
+                <span id="total-calorias">0</span>
+                <span id="total-proteina">0g</span>
+                <span id="total-hidratos">0g</span>
+                <span id="total-gordura">0g</span>
+                <span id="objetivo-cal-display">2500</span>
+                <div id="barra-calorias"></div>
+            </div>
+
+            <button class="agua-expandir-btn" id="ref-expandir-btn" onclick="toggleRefAvancadas()" aria-expanded="false">
+                <span>Opções avançadas</span>
+                <span class="agua-seta" id="ref-seta">▼</span>
+            </button>
+            <div id="ref-avancadas" style="display:none;">
+                <div class="card" style="margin-top:0.6rem;">
+                    <h2>Refeições favoritas</h2>
+                    <p class="subtitulo" style="margin-bottom:1rem;">Clica "+ Hoje" para adicionar rapidamente.</p>
+                    <div id="favoritas-container"></div>
                 </div>
-                <div style="margin-top:1.5rem;">
-                    <strong>Total de Calorias: <span id="total-calorias">0</span> kcal</strong>
-                    <div class="barra-progresso">
-                        <div class="barra-preenchida" id="barra-calorias" style="width:0%;"></div>
-                    </div>
-                    <small>Objetivo: <span id="objetivo-cal-display">2500</span> kcal</small>
+
+                <div class="card">
+                    <h2>Os meus alimentos</h2>
+                    <p class="subtitulo" style="margin-bottom:1rem;">Cria alimentos personalizados que aparecem na lista de seleção.</p>
+                    <form class="formulario" id="form-alimento-custom">
+                        <div class="form-linha">
+                            <div class="form-grupo"><label for="custom-nome">Nome</label><input type="text" id="custom-nome" placeholder="Ex: Iogurte proteico XPTO" required></div>
+                            <div class="form-grupo"><label for="custom-cal">Cal/100g</label><input type="number" id="custom-cal" min="0" required></div>
+                            <div class="form-grupo"><label for="custom-p">Proteína/100g</label><input type="number" id="custom-p" step="0.1" min="0" required></div>
+                            <div class="form-grupo"><label for="custom-h">Hidratos/100g</label><input type="number" id="custom-h" step="0.1" min="0" required></div>
+                            <div class="form-grupo"><label for="custom-g">Gordura/100g</label><input type="number" id="custom-g" step="0.1" min="0" required></div>
+                        </div>
+                        <button type="submit" class="btn btn-primario">Guardar alimento</button>
+                    </form>
+                    <div id="lista-custom" style="margin-top:1rem;"></div>
                 </div>
             </div>
 
@@ -522,28 +547,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>Refeições favoritas</h2>
-                <p class="subtitulo" style="margin-bottom:1rem;">Clica "+ Hoje" para adicionar rapidamente.</p>
-                <div id="favoritas-container"></div>
-            </div>
-
-            <div class="card">
-                <h2>Os meus alimentos</h2>
-                <p class="subtitulo" style="margin-bottom:1rem;">Cria alimentos personalizados que aparecem na lista de seleção.</p>
-                <form class="formulario" id="form-alimento-custom">
-                    <div class="form-linha">
-                        <div class="form-grupo"><label for="custom-nome">Nome</label><input type="text" id="custom-nome" placeholder="Ex: Iogurte proteico XPTO" required></div>
-                        <div class="form-grupo"><label for="custom-cal">Cal/100g</label><input type="number" id="custom-cal" min="0" required></div>
-                        <div class="form-grupo"><label for="custom-p">Proteína/100g</label><input type="number" id="custom-p" step="0.1" min="0" required></div>
-                        <div class="form-grupo"><label for="custom-h">Hidratos/100g</label><input type="number" id="custom-h" step="0.1" min="0" required></div>
-                        <div class="form-grupo"><label for="custom-g">Gordura/100g</label><input type="number" id="custom-g" step="0.1" min="0" required></div>
-                    </div>
-                    <button type="submit" class="btn btn-primario">Guardar alimento</button>
-                </form>
-                <div id="lista-custom" style="margin-top:1rem;"></div>
             </div>
 
             <div class="card">
@@ -781,6 +784,13 @@
                 <span style="margin-left:auto; opacity:0.5;">→</span>
             </a>
         </div>
+        <div class="drawer-secao">
+            <div class="drawer-secao-titulo">Aparência</div>
+            <button class="drawer-link-pagina btn-tema" id="btn-tema" onclick="toggleTema()" style="width:100%; text-align:left; cursor:pointer;">
+                ☀️ <span id="tema-label">Mudar para modo claro</span>
+                <span style="margin-left:auto; opacity:0.5;">→</span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -798,25 +808,73 @@
     // ===== NOME NO DRAWER =====
     document.getElementById('drawer-nome').textContent = Auth.actual() || 'convidado';
 
-    // ===== RESUMO DE HOJE =====
-    (function atualizarResumo() {
-        const refHoje = refeicoes.filter(r => r.data === _hoje);
-        const calHoje  = refHoje.reduce((s,r) => s + (r.calorias||0), 0);
-        const protHoje = refHoje.reduce((s,r) => s + (r.proteina||0), 0);
-        const hidHoje  = refHoje.reduce((s,r) => s + (r.hidratos||0), 0);
-        const gordHoje = refHoje.reduce((s,r) => s + (r.gordura||0), 0);
-        const ultimoPeso = registos[0];
+    // ===== RESUMO COM NAVEGAÇÃO DE DIAS =====
+    let _resumoOffset = 0; // 0 = hoje, -1 = ontem, etc.
 
-        document.getElementById('res-cal-hoje').innerHTML = `${calHoje} <span class="resumo-item-unidade">kcal</span>`;
+    function _dataComOffset(offset) {
+        const d = new Date();
+        d.setDate(d.getDate() + offset);
+        return d.toISOString().split('T')[0];
+    }
+
+    function atualizarResumo() {
+        const data = _dataComOffset(_resumoOffset);
+        const eHoje = _resumoOffset === 0;
+
+        // Título
+        const tituloEl = document.getElementById('resumo-titulo-data');
+        if (eHoje) {
+            tituloEl.textContent = 'Hoje';
+        } else {
+            const [ano, mes, dia] = data.split('-');
+            tituloEl.textContent = `${dia}/${mes}/${ano}`;
+        }
+
+        // Seta direita — desabilitar se estiver em hoje
+        const btnProx = document.getElementById('btn-resumo-proximo');
+        btnProx.disabled = eHoje;
+        btnProx.style.opacity = eHoje ? '0.3' : '1';
+
+        // Calorias e macros
+        const refs = refeicoes.filter(r => r.data === data);
+        const cal  = refs.reduce((s,r) => s + (r.calorias||0), 0);
+        const prot = refs.reduce((s,r) => s + (r.proteina||0), 0);
+        const hid  = refs.reduce((s,r) => s + (r.hidratos||0), 0);
+        const gord = refs.reduce((s,r) => s + (r.gordura||0), 0);
+
+        document.getElementById('res-cal-hoje').innerHTML = `${Math.round(cal)} <span class="resumo-item-unidade">kcal</span>`;
         if (objetivoCalorias) document.getElementById('res-obj-hoje').innerHTML = `${objetivoCalorias} <span class="resumo-item-unidade">kcal</span>`;
+        document.getElementById('res-prot-hoje').textContent = Math.round(prot) + 'g';
+        document.getElementById('res-hid-hoje').textContent  = Math.round(hid)  + 'g';
+        document.getElementById('res-gord-hoje').textContent = Math.round(gord) + 'g';
+
+        // Peso — registo mais próximo até essa data
+        const registosDaData = registos.filter(r => r.data <= data);
+        const ultimoPeso = registosDaData[0] || registos[0];
         if (ultimoPeso) {
             document.getElementById('res-peso-hoje').innerHTML = `${ultimoPeso.peso} <span class="resumo-item-unidade">kg</span>`;
-            if (ultimoPeso.massaMagra) document.getElementById('res-magra-hoje').innerHTML = `${ultimoPeso.massaMagra} <span class="resumo-item-unidade">kg</span>`;
+            const magra = ultimoPeso.massaMagra;
+            if (magra && magra !== '--') document.getElementById('res-magra-hoje').innerHTML = `${magra} <span class="resumo-item-unidade">kg</span>`;
         }
-        document.getElementById('res-prot-hoje').textContent = Math.round(protHoje) + 'g';
-        document.getElementById('res-hid-hoje').textContent  = Math.round(hidHoje)  + 'g';
-        document.getElementById('res-gord-hoje').textContent = Math.round(gordHoje) + 'g';
-    })();
+    }
+
+    function navegarResumo(dir) {
+        _resumoOffset = Math.min(0, _resumoOffset + dir);
+        atualizarResumo();
+    }
+
+    atualizarResumo();
+
+    // ===== REFEIÇÕES — opções avançadas =====
+    function toggleRefAvancadas() {
+        const painel = document.getElementById('ref-avancadas');
+        const seta   = document.getElementById('ref-seta');
+        const btn    = document.getElementById('ref-expandir-btn');
+        const aberto = painel.style.display !== 'none';
+        painel.style.display = aberto ? 'none' : 'block';
+        seta.textContent     = aberto ? '▼' : '▲';
+        btn.setAttribute('aria-expanded', String(!aberto));
+    }
 
     // ===== ÁGUA — expandir =====
     function toggleAguaCustom() {
@@ -859,7 +917,7 @@
         // Scroll
         const el = document.getElementById(id);
         if (el) {
-            const top = el.getBoundingClientRect().top + window.scrollY - 57;
+            const top = el.getBoundingClientRect().top + window.scrollY - 66;
             window.scrollTo({ top, behavior: 'smooth' });
         }
     }

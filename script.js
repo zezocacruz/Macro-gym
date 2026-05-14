@@ -18,9 +18,16 @@ function toggleTema() {
 
 function _atualizarBtnTema() {
     const isLight = document.body.classList.contains('light-mode');
+    // Label no drawer
+    const label = document.getElementById('tema-label');
+    if (label) label.textContent = isLight ? 'Mudar para modo escuro' : 'Mudar para modo claro';
+    // Ícone/título nos botões simples (sem filhos de texto)
     document.querySelectorAll('.btn-tema').forEach(btn => {
-        btn.textContent = isLight ? '🌙' : '☀️';
         btn.title = isLight ? 'Mudar para modo escuro' : 'Mudar para modo claro';
+        // Só atualiza textContent se for um botão simples (sem span filho)
+        if (!btn.querySelector('span')) {
+            btn.textContent = isLight ? '🌙' : '☀️';
+        }
     });
 }
 
