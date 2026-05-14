@@ -30,7 +30,11 @@
                     <button class="btn btn-perigo" onclick="resetAgua()" style="opacity:0.7;">Reset do dia</button>
                 </div>
             </div>
-            <div class="agua-custom">
+            <button class="agua-expandir-btn" id="agua-expandir-btn" onclick="toggleAguaCustom()" aria-expanded="false">
+                <span>Opções avançadas</span>
+                <span class="agua-seta" id="agua-seta">▼</span>
+            </button>
+            <div class="agua-custom" id="agua-custom" style="display:none; margin-top:0.8rem;">
                 <div class="agua-custom-grupo">
                     <label>Adicionar quantidade personalizada (ml)</label>
                     <div class="input-com-botao">
@@ -46,6 +50,17 @@
                     </div>
                 </div>
             </div>
+            <script>
+                function toggleAguaCustom() {
+                    const painel = document.getElementById('agua-custom');
+                    const seta   = document.getElementById('agua-seta');
+                    const btn    = document.getElementById('agua-expandir-btn');
+                    const aberto = painel.style.display !== 'none';
+                    painel.style.display = aberto ? 'none' : 'block';
+                    seta.textContent     = aberto ? '▼' : '▲';
+                    btn.setAttribute('aria-expanded', String(!aberto));
+                }
+            </script>
         </div>
     </div>
 

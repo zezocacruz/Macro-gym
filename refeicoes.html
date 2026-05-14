@@ -185,9 +185,17 @@
                 </p>
 
                 <div class="form-grupo">
-                    <label for="foto-input">📷 Escolher imagem / Tirar foto</label>
-                    <input type="file" id="foto-input" accept="image/*" capture="environment"
-                           style="padding:0.5rem; border:1px solid var(--cor-borda); border-radius:8px; background:var(--cor-input); color:var(--cor-texto); cursor:pointer; width:100%;">
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <button type="button" class="btn btn-secundario" style="width:100%; justify-content:center;" onclick="document.getElementById('foto-camera').click()">
+                            📷 Tirar foto
+                        </button>
+                        <button type="button" class="btn btn-secundario" style="width:100%; justify-content:center;" onclick="document.getElementById('foto-galeria').click()">
+                            🖼️ Escolher foto
+                        </button>
+                    </div>
+                    <input type="file" id="foto-camera" accept="image/*" capture="environment" style="display:none;">
+                    <input type="file" id="foto-galeria" accept="image/*" style="display:none;">
+                    <input type="file" id="foto-input" accept="image/*" style="display:none;">
                 </div>
 
                 <!-- Preview da foto -->

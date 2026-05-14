@@ -724,11 +724,13 @@ function mudarFotoModo(modo) {
     const previewContainer = document.getElementById('foto-preview-container');
     const btnAnalisar = document.getElementById('btn-analisar');
     const resultado = document.getElementById('foto-resultado');
-    const fotoInput = document.getElementById('foto-input');
     if (previewContainer) previewContainer.style.display = 'none';
     if (btnAnalisar) btnAnalisar.style.display = 'none';
     if (resultado) resultado.style.display = 'none';
-    if (fotoInput) fotoInput.value = '';
+    ['foto-input','foto-camera','foto-galeria'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
     fotoBase64 = null;
 }
 
@@ -755,47 +757,50 @@ function removerChaveGemini() {
 
 // Inicializar secção de foto
 const fotoInput = document.getElementById('foto-input');
-if (fotoInput) {
-    verificarApiKeyGemini();
 
-    fotoInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+function handleFotoSelecionada(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX = 800;
+            let w = img.width, h = img.height;
+            if (w > MAX || h > MAX) {
+                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                else       { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            fotoBase64 = dataUrl.split(',')[1];
 
-        // Comprimir imagem antes de enviar
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const img = new Image();
-            img.onload = () => {
-                // Redimensionar para máx 800px
-                const canvas = document.createElement('canvas');
-                const MAX = 800;
-                let w = img.width, h = img.height;
-                if (w > MAX || h > MAX) {
-                    if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-                    else       { w = Math.round(w * MAX / h); h = MAX; }
-                }
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                fotoBase64 = dataUrl.split(',')[1];
+            const preview = document.getElementById('foto-preview');
+            const container = document.getElementById('foto-preview-container');
+            if (preview) preview.src = dataUrl;
+            if (container) container.style.display = 'block';
 
-                // Mostrar preview
-                const preview = document.getElementById('foto-preview');
-                const container = document.getElementById('foto-preview-container');
-                if (preview) preview.src = dataUrl;
-                if (container) container.style.display = 'block';
+            const btnAnalisar = document.getElementById('btn-analisar');
+            if (btnAnalisar) btnAnalisar.style.display = 'block';
 
-                const btnAnalisar = document.getElementById('btn-analisar');
-                if (btnAnalisar) btnAnalisar.style.display = 'block';
-
-                const resultado = document.getElementById('foto-resultado');
-                if (resultado) resultado.style.display = 'none';
-            };
-            img.src = ev.target.result;
+            const resultado = document.getElementById('foto-resultado');
+            if (resultado) resultado.style.display = 'none';
         };
-        reader.readAsDataURL(file);
-    });
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+if (document.getElementById('foto-camera') || document.getElementById('foto-galeria')) {
+    verificarApiKeyGemini();
+    const fotoCamera = document.getElementById('foto-camera');
+    const fotoGaleria = document.getElementById('foto-galeria');
+    if (fotoCamera) fotoCamera.addEventListener('change', (e) => handleFotoSelecionada(e.target.files[0]));
+    if (fotoGaleria) fotoGaleria.addEventListener('change', (e) => handleFotoSelecionada(e.target.files[0]));
+} else if (fotoInput) {
+    verificarApiKeyGemini();
+    fotoInput.addEventListener('change', (e) => handleFotoSelecionada(e.target.files[0]));
 }
 
 async function analisarFoto() {
@@ -957,7 +962,10 @@ function adicionarDeFoto() {
     if (resultado) resultado.style.display = 'none';
     if (previewContainer) previewContainer.style.display = 'none';
     if (btnAnalisar) btnAnalisar.style.display = 'none';
-    if (fotoInput) fotoInput.value = '';
+    ['foto-input','foto-camera','foto-galeria'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
     fotoBase64 = null;
 
     alert('✅ Adicionado com sucesso!');

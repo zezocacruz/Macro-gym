@@ -6,8 +6,8 @@
     <title>FitTrack</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ===== HOME PAGE — MOBILE APP LAYOUT ===== */
         * { -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
 
         body {
             display: flex;
@@ -18,27 +18,38 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
-        .app-header {
+        /* ===== HEADER FIXO ===== */
+        .spa-header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background-color: var(--cor-fundo);
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 1.2rem 0.6rem;
-            flex-shrink: 0;
+            padding: 0.85rem 1.2rem 0.65rem;
+            border-bottom: 1px solid var(--cor-borda);
+            transition: background-color 0.3s;
         }
-        .app-logo-text {
-            font-size: 1.6rem;
+        .spa-logo {
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--cor-primaria);
             letter-spacing: -0.5px;
-            cursor: default;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        .header-acoes {
+        .spa-header-acoes {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
-        .btn-menu-home {
+        .spa-btn-icon {
             background: transparent;
             border: 1px solid var(--cor-borda);
             color: var(--cor-texto);
@@ -46,23 +57,28 @@
             height: 36px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: background-color 0.2s;
             flex-shrink: 0;
         }
-        .btn-menu-home:hover, .btn-menu-home:active { background-color: var(--cor-borda); }
+        .spa-btn-icon:active { background-color: var(--cor-borda); }
 
-        /* --- RESUMO DE HOJE --- */
+        /* ===== ÁREA DE SCROLL ===== */
+        .spa-main {
+            margin-top: 57px;
+            margin-bottom: 72px;
+        }
+
+        /* ===== RESUMO DE HOJE (topo, sem section) ===== */
         .resumo-hoje {
-            margin: 0.6rem 1rem 0.8rem;
+            margin: 0.7rem 0.9rem 0;
             background-color: var(--cor-card);
             border-radius: 14px;
             padding: 0.9rem 1rem;
             border: 1px solid var(--cor-borda);
-            flex-shrink: 0;
         }
         .resumo-titulo {
             font-size: 0.72rem;
@@ -84,527 +100,782 @@
             padding: 0.55rem 0.7rem;
             border: 1px solid var(--cor-borda);
         }
-        .resumo-item-label {
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            color: var(--cor-texto-claro);
-            letter-spacing: 0.3px;
-        }
-        .resumo-item-valor {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--cor-primaria);
-            line-height: 1.15;
-            margin-top: 0.1rem;
-        }
+        .resumo-item-label { font-size: 0.68rem; text-transform: uppercase; color: var(--cor-texto-claro); letter-spacing: 0.3px; }
+        .resumo-item-valor { font-size: 1.25rem; font-weight: 700; color: var(--cor-primaria); line-height: 1.15; margin-top: 0.1rem; }
         .resumo-item-unidade { font-size: 0.72rem; color: var(--cor-texto-claro); font-weight: 400; }
-
-        .resumo-macros {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-        }
-        .resumo-macro {
-            border-radius: 8px;
-            padding: 0.4rem 0.5rem;
-            text-align: center;
-            color: white;
-        }
+        .resumo-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+        .resumo-macro { border-radius: 8px; padding: 0.4rem 0.5rem; text-align: center; color: white; }
         .resumo-macro-label { font-size: 0.62rem; text-transform: uppercase; opacity: 0.9; }
-        .resumo-macro-val   { font-size: 1rem; font-weight: 700; }
+        .resumo-macro-val { font-size: 1rem; font-weight: 700; }
 
-        /* --- CARDS DE NAVEGAÇÃO --- */
-        .nav-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 0.65rem;
-            padding: 0 1rem;
-            flex: 1;
+        /* ===== SECÇÕES ===== */
+        .secao {
+            margin-top: 0.6rem;
+            scroll-margin-top: 57px;
         }
-        .nav-card {
+        .secao-header {
+            position: sticky;
+            top: 57px;
+            z-index: 50;
+            background-color: var(--cor-fundo);
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 0 1.6rem;
-            border-radius: 40px;
-            text-decoration: none;
-            color: white;
-            background-size: cover;
-            background-position: center;
-            flex: 1;
-            min-height: 68px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
-            z-index: 1;
+            gap: 0.6rem;
+            padding: 0.55rem 1rem;
+            border-bottom: 1px solid var(--cor-borda);
+            transition: background-color 0.3s;
+        }
+        .secao-icon { font-size: 1.15rem; }
+        .secao-titulo { font-size: 1rem; font-weight: 700; color: var(--cor-texto); }
+        .secao-conteudo { padding: 0.6rem 0.9rem 0.4rem; }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background-color: var(--cor-card);
+            border-top: 1px solid var(--cor-borda);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0.45rem 0 calc(0.45rem + env(safe-area-inset-bottom));
+            z-index: 100;
+            transition: background-color 0.3s;
+        }
+        .bn-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 0.3rem 0.5rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--cor-texto-claro);
+            opacity: 0.55;
+            transform: scale(0.92);
+            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), color 0.18s, opacity 0.18s;
             -webkit-user-select: none;
             user-select: none;
+            min-width: 52px;
         }
-        .nav-card::after {
-            content: '';
-            position: absolute;
-            top: -30%; right: -10%;
-            width: 120px; height: 120px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-            pointer-events: none;
+        .bn-tab.ativo {
+            color: var(--cor-primaria);
+            opacity: 1;
+            transform: scale(1.18);
         }
-        .nav-card-icon  { font-size: 2rem; flex-shrink: 0; line-height: 1; }
-        .nav-card-info  { flex: 1; }
-        .nav-card-titulo { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
-        .nav-card-desc  { font-size: 0.8rem; opacity: 0.85; margin-top: 0.1rem; }
-        .nav-card-stat  { font-size: 0.85rem; font-weight: 600; opacity: 0.9; flex-shrink: 0; text-align: right; }
+        .bn-tab-icon { font-size: 1.35rem; line-height: 1; }
+        .bn-tab-label { font-size: 0.58rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 
-        .nav-cards.tem-focado .nav-card:not(.focado) { transform: scale(0.96); filter: brightness(0.72); }
-        .nav-cards.tem-focado .nav-card.focado        { transform: scale(1.04); filter: brightness(1.08); z-index: 10; }
-
-        /* --- WIDGET PROGRESSO --- */
-        .progresso-widget {
-            margin: 0.8rem 1rem 1.2rem;
-            background-color: var(--cor-card);
-            border-radius: 16px;
-            padding: 1rem 1.1rem 0.8rem;
-            border: 1px solid var(--cor-borda);
-            flex-shrink: 0;
-        }
-        .progresso-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 0.8rem;
-        }
-        .progresso-titulo { font-size: 0.85rem; font-weight: 600; color: var(--cor-texto); text-transform: uppercase; letter-spacing: 0.5px; }
-        .progresso-stat   { font-size: 0.8rem; color: var(--cor-primaria); font-weight: 600; }
-
-        .mini-grafico-wrap { position: relative; height: 80px; }
-        .mini-grafico { display: flex; align-items: flex-end; gap: 5px; height: 62px; }
-        .mini-barra-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
-        .mini-barra { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.5s ease; }
-        .mini-barra-label { font-size: 9px; color: var(--cor-texto-claro); text-transform: uppercase; margin-top: 2px; }
-
-        .mini-obj-wrap  { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 4px; pointer-events: none; }
-        .mini-obj-linha { flex: 1; height: 1px; border-top: 1.5px dashed #ef4444; opacity: 0.6; }
-        .mini-obj-label { font-size: 9px; color: #ef4444; opacity: 0.8; white-space: nowrap; }
-        .mini-sem-dados { height: 62px; display: flex; align-items: center; justify-content: center; color: var(--cor-texto-claro); font-size: 0.85rem; }
-
-        /* ===== DRAWER ===== */
+        /* ===== DRAWER (igual ao anterior) ===== */
         .drawer-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 200;
-            opacity: 0;
+            z-index: 200; opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
         .drawer-overlay.aberto { opacity: 1; pointer-events: all; }
-
         .drawer {
-            position: fixed;
-            top: 0; right: 0;
-            width: min(100vw, 430px);
-            height: 100vh;
+            position: fixed; top: 0; right: 0;
+            width: min(100vw, 430px); height: 100vh;
             background-color: var(--cor-fundo);
             z-index: 201;
             transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow-y: auto; display: flex; flex-direction: column;
         }
         .drawer.aberto { transform: translateX(0); }
-
         .drawer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 1rem 1.2rem;
             border-bottom: 1px solid var(--cor-borda);
             background-color: var(--cor-card);
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            flex-shrink: 0; position: sticky; top: 0; z-index: 10;
             transition: background-color 0.3s;
         }
         .drawer-titulo { font-size: 1rem; font-weight: 700; color: var(--cor-texto); }
         .drawer-fechar {
-            background: transparent;
-            border: 1px solid var(--cor-borda);
-            color: var(--cor-texto);
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
+            background: transparent; border: 1px solid var(--cor-borda);
+            color: var(--cor-texto); width: 32px; height: 32px;
+            border-radius: 8px; cursor: pointer; font-size: 1rem;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
         }
-        .drawer-fechar:hover, .drawer-fechar:active { background-color: var(--cor-borda); }
-
+        .drawer-fechar:active { background-color: var(--cor-borda); }
         .drawer-content { padding: 1rem; flex: 1; }
-
         .drawer-secao {
-            background-color: var(--cor-card);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            background-color: var(--cor-card); border-radius: 12px;
+            padding: 1rem; margin-bottom: 1rem;
             border: 1px solid var(--cor-borda);
             transition: background-color 0.3s;
         }
         .drawer-secao-titulo {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--cor-texto-claro);
-            margin-bottom: 0.8rem;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--cor-texto-claro); margin-bottom: 0.8rem;
         }
-
-        /* Perfil */
         .perfil-avatar {
-            width: 46px; height: 46px;
-            border-radius: 50%;
+            width: 46px; height: 46px; border-radius: 50%;
             background: linear-gradient(135deg, var(--cor-primaria), #7c3aed);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem; margin-bottom: 0.5rem;
         }
         .perfil-nome { font-size: 1.15rem; font-weight: 700; color: var(--cor-texto); }
-        .perfil-sub  { font-size: 0.78rem; color: var(--cor-texto-claro); margin-top: 0.15rem; }
-
+        .perfil-sub { font-size: 0.78rem; color: var(--cor-texto-claro); margin-top: 0.15rem; }
         .drawer-logout {
-            width: 100%;
-            margin-top: 0.7rem;
-            background: transparent;
-            border: 1px solid rgba(239,68,68,0.4);
-            color: #ef4444;
-            padding: 0.5rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
+            width: 100%; margin-top: 0.7rem;
+            background: transparent; border: 1px solid rgba(239,68,68,0.4);
+            color: #ef4444; padding: 0.5rem; border-radius: 8px;
+            font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
         }
-        .drawer-logout:hover, .drawer-logout:active { background: rgba(239,68,68,0.1); }
-
-        /* Link de página no drawer */
+        .drawer-logout:active { background: rgba(239,68,68,0.1); }
         .drawer-link-pagina {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            display: flex; align-items: center; gap: 0.6rem;
             padding: 0.7rem 0.8rem;
-            background-color: var(--cor-input);
-            border: 1px solid var(--cor-borda);
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--cor-texto);
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: background-color 0.2s;
+            background-color: var(--cor-input); border: 1px solid var(--cor-borda);
+            border-radius: 10px; text-decoration: none;
+            color: var(--cor-texto); font-size: 0.95rem; font-weight: 500;
         }
-        .drawer-link-pagina:hover, .drawer-link-pagina:active {
-            background-color: var(--cor-borda);
+        .drawer-link-pagina:active { background-color: var(--cor-borda); }
+
+        /* ===== ÁGUA — expandir btn ===== */
+        .agua-expandir-btn {
+            width: 100%; display: flex; align-items: center;
+            justify-content: space-between;
+            background: transparent; border: 1px solid var(--cor-borda);
+            border-radius: 10px; color: var(--cor-texto-claro);
+            font-size: 0.9rem; padding: 0.6rem 0.9rem;
+            margin-top: 1rem; cursor: pointer;
         }
+        .agua-expandir-btn:active { background-color: var(--cor-borda); }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <header class="app-header">
-        <span class="app-logo-text">FitTrack</span>
-        <div class="header-acoes">
-            <button class="btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
-            <button class="btn-menu-home" onclick="abrirDrawer()" aria-label="Abrir menu">☰</button>
-        </div>
-    </header>
+<!-- ===== HEADER FIXO ===== -->
+<header class="spa-header">
+    <span class="spa-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">FitTrack</span>
+    <div class="spa-header-acoes">
+        <button class="spa-btn-icon btn-tema" id="btn-tema" onclick="toggleTema()" title="Mudar tema" aria-label="Mudar tema">☀️</button>
+        <button class="spa-btn-icon" onclick="abrirDrawer()" aria-label="Abrir menu">☰</button>
+    </div>
+</header>
 
-    <!-- ===== RESUMO DE HOJE ===== -->
-    <div class="resumo-hoje">
-        <div class="resumo-titulo">Hoje</div>
-        <div class="resumo-grid">
-            <div class="resumo-item">
-                <div class="resumo-item-label">Calorias</div>
-                <div class="resumo-item-valor" id="res-cal-hoje">0 <span class="resumo-item-unidade">kcal</span></div>
+<!-- ===== ÁREA PRINCIPAL ===== -->
+<main class="spa-main">
+
+    <!-- RESUMO DE HOJE -->
+    <div id="inicio" style="padding-top:0.2rem;">
+        <div class="resumo-hoje">
+            <div class="resumo-titulo">Hoje</div>
+            <div class="resumo-grid">
+                <div class="resumo-item">
+                    <div class="resumo-item-label">Calorias</div>
+                    <div class="resumo-item-valor" id="res-cal-hoje">0 <span class="resumo-item-unidade">kcal</span></div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-item-label">Objetivo</div>
+                    <div class="resumo-item-valor" id="res-obj-hoje">— <span class="resumo-item-unidade">kcal</span></div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-item-label">Peso atual</div>
+                    <div class="resumo-item-valor" id="res-peso-hoje">— <span class="resumo-item-unidade">kg</span></div>
+                </div>
+                <div class="resumo-item">
+                    <div class="resumo-item-label">Massa magra</div>
+                    <div class="resumo-item-valor" id="res-magra-hoje">— <span class="resumo-item-unidade">kg</span></div>
+                </div>
             </div>
-            <div class="resumo-item">
-                <div class="resumo-item-label">Objetivo</div>
-                <div class="resumo-item-valor" id="res-obj-hoje">— <span class="resumo-item-unidade">kcal</span></div>
-            </div>
-            <div class="resumo-item">
-                <div class="resumo-item-label">Peso atual</div>
-                <div class="resumo-item-valor" id="res-peso-hoje">— <span class="resumo-item-unidade">kg</span></div>
-            </div>
-            <div class="resumo-item">
-                <div class="resumo-item-label">Massa magra</div>
-                <div class="resumo-item-valor" id="res-magra-hoje">— <span class="resumo-item-unidade">kg</span></div>
-            </div>
-        </div>
-        <div class="resumo-macros">
-            <div class="resumo-macro" style="background-color:var(--cor-proteina);">
-                <div class="resumo-macro-label">Proteína</div>
-                <div class="resumo-macro-val" id="res-prot-hoje">0g</div>
-            </div>
-            <div class="resumo-macro" style="background-color:var(--cor-hidratos);">
-                <div class="resumo-macro-label">Hidratos</div>
-                <div class="resumo-macro-val" id="res-hid-hoje">0g</div>
-            </div>
-            <div class="resumo-macro" style="background-color:var(--cor-gordura);">
-                <div class="resumo-macro-label">Gordura</div>
-                <div class="resumo-macro-val" id="res-gord-hoje">0g</div>
+            <div class="resumo-macros">
+                <div class="resumo-macro" style="background-color:var(--cor-proteina);">
+                    <div class="resumo-macro-label">Proteína</div>
+                    <div class="resumo-macro-val" id="res-prot-hoje">0g</div>
+                </div>
+                <div class="resumo-macro" style="background-color:var(--cor-hidratos);">
+                    <div class="resumo-macro-label">Hidratos</div>
+                    <div class="resumo-macro-val" id="res-hid-hoje">0g</div>
+                </div>
+                <div class="resumo-macro" style="background-color:var(--cor-gordura);">
+                    <div class="resumo-macro-label">Gordura</div>
+                    <div class="resumo-macro-val" id="res-gord-hoje">0g</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ===== CARDS DE NAVEGAÇÃO ===== -->
-    <div class="nav-cards" id="nav-cards">
+    <!-- ===================== REFEIÇÕES ===================== -->
+    <section id="refeicoes" class="secao">
+        <div class="secao-header" style="background: linear-gradient(135deg, rgba(2,44,34,0.82) 0%, rgba(5,150,105,0.48) 100%), url('https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center; border-bottom:none;">
+            <span class="secao-icon" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">🥗</span>
+            <span class="secao-titulo" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">Refeições</span>
+        </div>
+        <div class="secao-conteudo">
 
-        <a href="refeicoes.html" class="nav-card"
-           style="background: linear-gradient(135deg, rgba(2,44,34,0.82) 0%, rgba(5,150,105,0.48) 100%), url('https://images.unsplash.com/photo-1556761223-4c4282c73f77?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
-            <span class="nav-card-icon">🥗</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Refeições</div>
+            <div class="card">
+                <h2>Adicionar Refeição</h2>
+                <div class="toggle-modo">
+                    <button type="button" class="btn-toggle ativo" id="modo-lista-btn">Escolher da lista</button>
+                    <button type="button" class="btn-toggle" id="modo-composta-btn">Refeição composta</button>
+                    <button type="button" class="btn-toggle" id="modo-manual-btn">Inserir manualmente</button>
+                    <button type="button" class="btn-toggle" id="modo-foto-btn">📷 Foto</button>
+                </div>
+
+                <!-- MODO LISTA -->
+                <form class="formulario" id="form-lista">
+                    <div class="form-linha">
+                        <div class="form-grupo">
+                            <label for="data-refeicao">Data</label>
+                            <input type="date" id="data-refeicao" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="tipo-refeicao-lista">Refeição</label>
+                            <select id="tipo-refeicao-lista" required>
+                                <option value="pequeno-almoco">Pequeno-almoço</option>
+                                <option value="almoco">Almoço</option>
+                                <option value="lanche">Lanche</option>
+                                <option value="jantar">Jantar</option>
+                                <option value="ceia">Ceia</option>
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="quantidade">Quantidade (g/ml)</label>
+                            <input type="number" id="quantidade" min="1" step="1" placeholder="Ex: 150" required>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="alimento-busca">Alimento <small style="color:var(--cor-texto-claro); font-weight:normal;">(escreve para filtrar)</small></label>
+                        <div class="combobox">
+                            <input type="text" id="alimento-busca" class="combobox-input" placeholder="Pesquisar alimento..." autocomplete="off">
+                            <div class="combobox-lista" id="combobox-lista"></div>
+                        </div>
+                        <input type="hidden" id="alimento-lista" value="">
+                    </div>
+                    <div class="preview-macros" id="preview-macros" style="display:none;">
+                        <h4>Valores calculados:</h4>
+                        <div class="preview-valores">
+                            <span><strong id="prev-cal">0</strong> kcal</span>
+                            <span style="color:var(--cor-proteina);"><strong id="prev-p">0</strong>g prot.</span>
+                            <span style="color:var(--cor-hidratos);"><strong id="prev-h">0</strong>g hid.</span>
+                            <span style="color:var(--cor-gordura);"><strong id="prev-g">0</strong>g gord.</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Adicionar</button>
+                </form>
+
+                <!-- MODO COMPOSTA -->
+                <form class="formulario" id="form-composta" style="display:none;">
+                    <div class="form-linha">
+                        <div class="form-grupo">
+                            <label for="data-refeicao-composta">Data</label>
+                            <input type="date" id="data-refeicao-composta" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="tipo-refeicao-composta">Refeição</label>
+                            <select id="tipo-refeicao-composta" required>
+                                <option value="pequeno-almoco">Pequeno-almoço</option>
+                                <option value="almoco">Almoço</option>
+                                <option value="lanche">Lanche</option>
+                                <option value="jantar">Jantar</option>
+                                <option value="ceia">Ceia</option>
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="nome-composta">Nome</label>
+                            <input type="text" id="nome-composta" placeholder="Ex: Carne com arroz" required>
+                        </div>
+                    </div>
+                    <h3 style="margin-top:0.5rem;">Ingredientes</h3>
+                    <p class="subtitulo" style="margin-bottom:0.5rem; font-size:0.85rem;">Adiciona vários alimentos.</p>
+                    <div id="ingredientes-lista"></div>
+                    <button type="button" class="btn btn-secundario" onclick="adicionarIngredienteRow()" style="width:fit-content;">+ Adicionar ingrediente</button>
+                    <div class="preview-macros" id="preview-composta" style="display:none;">
+                        <h4>Total da refeição:</h4>
+                        <div class="preview-valores">
+                            <span><strong id="comp-cal">0</strong> kcal</span>
+                            <span style="color:var(--cor-proteina);"><strong id="comp-p">0</strong>g prot.</span>
+                            <span style="color:var(--cor-hidratos);"><strong id="comp-h">0</strong>g hid.</span>
+                            <span style="color:var(--cor-gordura);"><strong id="comp-g">0</strong>g gord.</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Adicionar refeição composta</button>
+                </form>
+
+                <!-- MODO MANUAL -->
+                <form class="formulario" id="form-refeicao" style="display:none;">
+                    <div class="form-linha">
+                        <div class="form-grupo">
+                            <label for="data-refeicao-manual">Data</label>
+                            <input type="date" id="data-refeicao-manual" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="tipo-refeicao">Refeição</label>
+                            <select id="tipo-refeicao" required>
+                                <option value="pequeno-almoco">Pequeno-almoço</option>
+                                <option value="almoco">Almoço</option>
+                                <option value="lanche">Lanche</option>
+                                <option value="jantar">Jantar</option>
+                                <option value="ceia">Ceia</option>
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="nome-alimento">Alimento</label>
+                            <input type="text" id="nome-alimento" placeholder="Ex: Frango grelhado" required>
+                        </div>
+                    </div>
+                    <div class="form-linha">
+                        <div class="form-grupo">
+                            <label for="calorias">Calorias (kcal)</label>
+                            <input type="number" id="calorias" min="0" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="proteina">Proteína (g)</label>
+                            <input type="number" id="proteina" min="0" step="0.1" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="hidratos">Hidratos (g)</label>
+                            <input type="number" id="hidratos" min="0" step="0.1" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="gordura">Gordura (g)</label>
+                            <input type="number" id="gordura" min="0" step="0.1" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Adicionar</button>
+                </form>
+
+                <!-- MODO FOTO (IA) -->
+                <div id="form-foto" style="display:none;">
+                    <div class="foto-api-box" id="secao-api-key">
+                        <strong>🔑 Chave API Gemini necessária</strong>
+                        <p>
+                            Para usar a análise por foto precisas de uma chave gratuita do Google Gemini.<br>
+                            1. Vai a <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a><br>
+                            2. Clica em "Create API Key" (é grátis)<br>
+                            3. Cola a chave aqui:
+                        </p>
+                        <div class="input-com-botao">
+                            <input type="text" id="gemini-key-input" placeholder="AIzaSy..." style="font-family:monospace;">
+                            <button class="btn btn-primario" onclick="guardarChaveGemini()">Guardar</button>
+                        </div>
+                    </div>
+                    <div class="foto-sub-toggle">
+                        <button type="button" class="btn-toggle ativo" id="foto-comida-btn" onclick="mudarFotoModo('comida')">🍽️ Identificar comida</button>
+                        <button type="button" class="btn-toggle" id="foto-rotulo-btn" onclick="mudarFotoModo('rotulo')">🏷️ Ler rótulo</button>
+                    </div>
+                    <p id="foto-instrucao" class="subtitulo" style="margin-bottom:1rem; font-size:0.95rem;">
+                        Tira foto à comida e o FitTrack tenta identificar o alimento e os seus macros aproximados.
+                    </p>
+                    <div class="form-grupo">
+                        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                            <button type="button" class="btn btn-secundario" style="width:100%; justify-content:center;" onclick="document.getElementById('foto-camera').click()">📷 Tirar foto</button>
+                            <button type="button" class="btn btn-secundario" style="width:100%; justify-content:center;" onclick="document.getElementById('foto-galeria').click()">🖼️ Escolher foto</button>
+                        </div>
+                        <input type="file" id="foto-camera" accept="image/*" capture="environment" style="display:none;">
+                        <input type="file" id="foto-galeria" accept="image/*" style="display:none;">
+                        <input type="file" id="foto-input" accept="image/*" style="display:none;">
+                    </div>
+                    <div id="foto-preview-container" style="display:none;">
+                        <img id="foto-preview" class="foto-preview-img" alt="Preview da foto">
+                    </div>
+                    <button id="btn-analisar" class="btn btn-primario" onclick="analisarFoto()" style="display:none; margin-top:0.5rem;">
+                        🔍 Analisar com IA
+                    </button>
+                    <div class="foto-loading" id="foto-loading">⏳ A analisar com IA, aguarda um momento...</div>
+                    <div class="foto-resultado" id="foto-resultado"></div>
+                    <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--cor-texto-claro);">
+                        Chave API guardada no browser. <a href="#" onclick="removerChaveGemini(); return false;" style="color:var(--cor-texto-claro);">Remover chave</a>
+                    </p>
+                </div>
             </div>
-            <div class="nav-card-stat" id="stat-dieta"></div>
-        </a>
 
-        <a href="agua.html" class="nav-card"
-           style="background: linear-gradient(135deg, rgba(12,26,58,0.82) 0%, rgba(14,165,233,0.48) 100%), url('https://images.unsplash.com/photo-1650394696192-51c05b02e203?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
-            <span class="nav-card-icon">💧</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Água</div>
+            <div class="card">
+                <h2>Resumo do Dia</h2>
+                <div class="macros">
+                    <div class="macro macro-proteina"><div class="nome">Proteína</div><div class="valor" id="total-proteina">0g</div></div>
+                    <div class="macro macro-hidratos"><div class="nome">Hidratos</div><div class="valor" id="total-hidratos">0g</div></div>
+                    <div class="macro macro-gordura"><div class="nome">Gordura</div><div class="valor" id="total-gordura">0g</div></div>
+                </div>
+                <div style="margin-top:1.5rem;">
+                    <strong>Total de Calorias: <span id="total-calorias">0</span> kcal</strong>
+                    <div class="barra-progresso">
+                        <div class="barra-preenchida" id="barra-calorias" style="width:0%;"></div>
+                    </div>
+                    <small>Objetivo: <span id="objetivo-cal-display">2500</span> kcal</small>
+                </div>
             </div>
-            <div class="nav-card-stat" id="stat-agua"></div>
-        </a>
 
-        <a href="sono.html" class="nav-card"
-           style="background: linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(109,40,217,0.48) 100%), url('https://images.unsplash.com/photo-1777277014866-030033488cee?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
-            <span class="nav-card-icon">😴</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Sono</div>
+            <div class="card">
+                <h2>Refeições de Hoje</h2>
+                <div class="tabela-container">
+                    <table class="tabela">
+                        <thead>
+                            <tr>
+                                <th>Refeição</th><th>Alimento</th><th>Qtd.</th><th>Calorias</th>
+                                <th>Proteína</th><th>Hidratos</th><th>Gordura</th><th>Fav.</th><th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-refeicoes">
+                            <tr><td colspan="9" style="text-align:center; color:var(--cor-texto-claro);">Ainda não adicionaste refeições hoje</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="nav-card-stat" id="stat-sono"></div>
-        </a>
 
-        <a href="peso.html" class="nav-card"
-           style="background: linear-gradient(135deg, rgba(26,10,0,0.82) 0%, rgba(234,88,12,0.48) 100%), url('https://images.unsplash.com/photo-1678967633223-050cf8e1c55c?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
-            <span class="nav-card-icon">⚖️</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Composição Corporal</div>
+            <div class="card">
+                <h2>Refeições favoritas</h2>
+                <p class="subtitulo" style="margin-bottom:1rem;">Clica "+ Hoje" para adicionar rapidamente.</p>
+                <div id="favoritas-container"></div>
             </div>
-            <div class="nav-card-stat" id="stat-peso"></div>
-        </a>
 
-        <a href="estatisticas.html" class="nav-card"
-           style="background: linear-gradient(135deg, rgba(26,10,24,0.82) 0%, rgba(219,39,119,0.48) 100%), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center;">
-            <span class="nav-card-icon">📈</span>
-            <div class="nav-card-info">
-                <div class="nav-card-titulo">Estatísticas</div>
+            <div class="card">
+                <h2>Os meus alimentos</h2>
+                <p class="subtitulo" style="margin-bottom:1rem;">Cria alimentos personalizados que aparecem na lista de seleção.</p>
+                <form class="formulario" id="form-alimento-custom">
+                    <div class="form-linha">
+                        <div class="form-grupo"><label for="custom-nome">Nome</label><input type="text" id="custom-nome" placeholder="Ex: Iogurte proteico XPTO" required></div>
+                        <div class="form-grupo"><label for="custom-cal">Cal/100g</label><input type="number" id="custom-cal" min="0" required></div>
+                        <div class="form-grupo"><label for="custom-p">Proteína/100g</label><input type="number" id="custom-p" step="0.1" min="0" required></div>
+                        <div class="form-grupo"><label for="custom-h">Hidratos/100g</label><input type="number" id="custom-h" step="0.1" min="0" required></div>
+                        <div class="form-grupo"><label for="custom-g">Gordura/100g</label><input type="number" id="custom-g" step="0.1" min="0" required></div>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Guardar alimento</button>
+                </form>
+                <div id="lista-custom" style="margin-top:1rem;"></div>
             </div>
-        </a>
 
+            <div class="card">
+                <h2>Histórico (últimas 2 semanas)</h2>
+                <p class="subtitulo" style="margin-bottom:1rem;">O que comeste nos últimos 14 dias, agrupado por data.</p>
+                <div id="historico-container"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================== ÁGUA ===================== -->
+    <section id="agua" class="secao">
+        <div class="secao-header" style="background: linear-gradient(135deg, rgba(12,26,58,0.82) 0%, rgba(14,165,233,0.48) 100%), url('https://images.unsplash.com/photo-1650394696192-51c05b02e203?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center; border-bottom:none;">
+            <span class="secao-icon" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">💧</span>
+            <span class="secao-titulo" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">Água</span>
+        </div>
+        <div class="secao-conteudo">
+            <div class="card">
+                <h2>Água de hoje</h2>
+                <div class="agua-bloco">
+                    <div class="agua-display">
+                        <div class="valor-grande"><span data-agua="ml">0</span> / <span data-agua="objetivo-ml">2000</span> ml</div>
+                        <div class="subvalor"><span data-agua="copos">0</span> copos de 250ml (meta: <span data-agua="objetivo">8</span> copos)</div>
+                        <div class="barra-progresso" style="margin-top:0.8rem;">
+                            <div class="barra-preenchida" data-agua="barra" style="background-color:var(--cor-secundaria); width:0%;"></div>
+                        </div>
+                    </div>
+                    <div class="agua-botoes">
+                        <button class="btn btn-secundario" onclick="incAgua()">+ Copo (250ml)</button>
+                        <button class="btn btn-perigo" onclick="decAgua()">− Copo</button>
+                        <button class="btn btn-perigo" onclick="resetAgua()" style="opacity:0.7;">Reset do dia</button>
+                    </div>
+                </div>
+                <button class="agua-expandir-btn" id="agua-expandir-btn" onclick="toggleAguaCustom()" aria-expanded="false">
+                    <span>Opções avançadas</span>
+                    <span class="agua-seta" id="agua-seta">▼</span>
+                </button>
+                <div class="agua-custom" id="agua-custom" style="display:none; margin-top:0.8rem;">
+                    <div class="agua-custom-grupo">
+                        <label>Adicionar quantidade personalizada (ml)</label>
+                        <div class="input-com-botao">
+                            <input type="number" id="agua-custom-input" min="1" placeholder="Ex: 500 (garrafa)">
+                            <button class="btn btn-secundario" onclick="adicionarAguaCustom()">+ Adicionar</button>
+                        </div>
+                    </div>
+                    <div class="agua-custom-grupo">
+                        <label>Meta diária personalizada (ml)</label>
+                        <div class="input-com-botao">
+                            <input type="number" id="agua-objetivo-input" min="100" placeholder="Ex: 2500">
+                            <button class="btn btn-primario" onclick="definirObjetivoAgua()">Guardar meta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SONO ===================== -->
+    <section id="sec-sono" class="secao">
+        <div class="secao-header" style="background: linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(109,40,217,0.48) 100%), url('https://images.unsplash.com/photo-1777277014866-030033488cee?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center; border-bottom:none;">
+            <span class="secao-icon" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">😴</span>
+            <span class="secao-titulo" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">Sono & Bem-estar</span>
+        </div>
+        <div class="secao-conteudo">
+            <div class="card">
+                <h2>Registo do dia</h2>
+                <form class="formulario" id="form-diario">
+                    <div class="form-linha">
+                        <div class="form-grupo">
+                            <label for="data-diario">Data</label>
+                            <input type="date" id="data-diario" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="sono">Horas de sono</label>
+                            <input type="number" id="sono" step="0.5" min="0" max="24" placeholder="Ex: 7.5">
+                        </div>
+                        <div class="form-grupo">
+                            <label for="energia">Energia (1-10)</label>
+                            <input type="number" id="energia" min="1" max="10" placeholder="Ex: 8">
+                        </div>
+                        <div class="form-grupo">
+                            <label for="humor">Humor</label>
+                            <select id="humor">
+                                <option value="otimo">Ótimo</option>
+                                <option value="bom">Bom</option>
+                                <option value="neutro" selected>Neutro</option>
+                                <option value="mau">Mau</option>
+                                <option value="pessimo">Péssimo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="notas">Notas</label>
+                        <textarea id="notas" rows="3" placeholder="Como correu o dia? Treino, stress, refeições..." style="padding:0.7rem; border:1px solid var(--cor-borda); border-radius:8px; background-color:var(--cor-input); color:var(--cor-texto); font-family:inherit; font-size:1rem; resize:vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Guardar</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Histórico</h2>
+                <div id="historico-diario"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== COMPOSIÇÃO CORPORAL ===================== -->
+    <section id="corpo" class="secao">
+        <div class="secao-header" style="background: linear-gradient(135deg, rgba(26,10,0,0.82) 0%, rgba(234,88,12,0.48) 100%), url('https://images.unsplash.com/photo-1678967633223-050cf8e1c55c?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center; border-bottom:none;">
+            <span class="secao-icon" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">⚖️</span>
+            <span class="secao-titulo" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">Composição Corporal</span>
+        </div>
+        <div class="secao-conteudo">
+
+            <div class="card">
+                <h2>Novo Registo</h2>
+                <form class="formulario" id="form-peso">
+                    <div class="form-linha">
+                        <div class="form-grupo"><label for="data-registo">Data</label><input type="date" id="data-registo" required></div>
+                        <div class="form-grupo"><label for="peso">Peso (kg)</label><input type="number" id="peso" step="0.1" min="0" required></div>
+                        <div class="form-grupo"><label for="massa-gorda">Massa Gorda (%)</label><input type="number" id="massa-gorda" step="0.1" min="0" max="100"></div>
+                        <div class="form-grupo"><label for="massa-magra">Massa Magra (kg)</label><input type="number" id="massa-magra" step="0.1" min="0"></div>
+                    </div>
+                    <div class="form-linha">
+                        <div class="form-grupo"><label for="cintura">Cintura (cm)</label><input type="number" id="cintura" step="0.1" min="0"></div>
+                        <div class="form-grupo"><label for="peito">Peito (cm)</label><input type="number" id="peito" step="0.1" min="0"></div>
+                        <div class="form-grupo"><label for="braco">Braço (cm)</label><input type="number" id="braco" step="0.1" min="0"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primario">Guardar Registo</button>
+                </form>
+            </div>
+
+            <div class="grid-dashboard">
+                <div class="card-estatistica"><h3>Último Peso</h3><div class="valor" id="ultimo-peso">-- <span class="unidade">kg</span></div></div>
+                <div class="card-estatistica"><h3>Massa Gorda</h3><div class="valor" id="ultima-gorda">-- <span class="unidade">%</span></div></div>
+                <div class="card-estatistica"><h3>Massa Magra</h3><div class="valor" id="ultima-magra">-- <span class="unidade">kg</span></div></div>
+                <div class="card-estatistica"><h3>IMC</h3><div class="valor" id="imc-valor">--</div><div style="color:var(--cor-texto-claro); font-size:0.85rem; margin-top:0.3rem;" id="imc-classif">—</div></div>
+                <div class="card-estatistica"><h3>Tendência</h3><div class="valor" id="tendencia-valor" style="font-size:1.8rem;">--</div><div style="color:var(--cor-texto-claro); font-size:0.85rem; margin-top:0.3rem;" id="tendencia-desc">—</div></div>
+            </div>
+
+            <div class="card">
+                <h2>Histórico de Registos</h2>
+                <div class="tabela-container">
+                    <table class="tabela">
+                        <thead>
+                            <tr>
+                                <th>Data</th><th>Peso</th><th>M. Gorda</th><th>M. Magra</th>
+                                <th>Cintura</th><th>Peito</th><th>Braço</th><th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-pesos">
+                            <tr><td colspan="8" style="text-align:center; color:var(--cor-texto-claro);">Ainda não tens registos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================== ESTATÍSTICAS ===================== -->
+    <section id="estatisticas" class="secao">
+        <div class="secao-header" style="background: linear-gradient(135deg, rgba(26,10,24,0.82) 0%, rgba(219,39,119,0.48) 100%), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&auto=format&fit=crop'); background-size:cover; background-position:center; border-bottom:none;">
+            <span class="secao-icon" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">📈</span>
+            <span class="secao-titulo" style="color:white; text-shadow:0 1px 4px rgba(0,0,0,0.5);">Estatísticas</span>
+        </div>
+        <div class="secao-conteudo">
+            <div class="card">
+                <h2>Peso ao longo do tempo</h2>
+                <div class="grafico-wrapper"><canvas id="grafico-peso"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Calorias nos últimos 14 dias</h2>
+                <p class="subtitulo" style="margin-bottom:1rem;">A linha vermelha tracejada é o teu objetivo diário.</p>
+                <div class="grafico-wrapper"><canvas id="grafico-calorias"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Macros médios (últimos 7 dias)</h2>
+                <p class="subtitulo" style="margin-bottom:1rem; font-size:0.85rem;">Distribuição média em calorias.</p>
+                <div class="grafico-wrapper" style="height:280px;"><canvas id="grafico-macros"></canvas></div>
+            </div>
+            <div class="card" style="margin-bottom:1rem;">
+                <h2>Água nos últimos 14 dias</h2>
+                <p class="subtitulo" style="margin-bottom:1rem; font-size:0.85rem;">Quantidade em ml consumida por dia.</p>
+                <div class="grafico-wrapper" style="height:280px;"><canvas id="grafico-agua"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav" id="bottom-nav">
+    <button class="bn-tab" data-secao="refeicoes" onclick="irPara('refeicoes')">
+        <span class="bn-tab-icon">🥗</span>
+        <span class="bn-tab-label">Refeições</span>
+    </button>
+    <button class="bn-tab" data-secao="agua" onclick="irPara('agua')">
+        <span class="bn-tab-icon">💧</span>
+        <span class="bn-tab-label">Água</span>
+    </button>
+    <button class="bn-tab" data-secao="sec-sono" onclick="irPara('sec-sono')">
+        <span class="bn-tab-icon">😴</span>
+        <span class="bn-tab-label">Sono</span>
+    </button>
+    <button class="bn-tab" data-secao="corpo" onclick="irPara('corpo')">
+        <span class="bn-tab-icon">⚖️</span>
+        <span class="bn-tab-label">Corpo</span>
+    </button>
+    <button class="bn-tab" data-secao="estatisticas" onclick="irPara('estatisticas')">
+        <span class="bn-tab-icon">📈</span>
+        <span class="bn-tab-label">Stats</span>
+    </button>
+</nav>
+
+<!-- ===== DRAWER ===== -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="fecharDrawer()"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-header">
+        <span class="drawer-titulo">Menu</span>
+        <button class="drawer-fechar" onclick="fecharDrawer()" aria-label="Fechar menu">✕</button>
     </div>
-
-    <!-- ===== WIDGET DE PROGRESSO ===== -->
-    <div class="progresso-widget">
-        <div class="progresso-header">
-            <span class="progresso-titulo">Calorias — últimos 7 dias</span>
-            <span class="progresso-stat" id="prog-hoje">Hoje: —</span>
+    <div class="drawer-content">
+        <div class="drawer-secao">
+            <div class="drawer-secao-titulo">Perfil</div>
+            <div class="perfil-avatar">👤</div>
+            <div class="perfil-nome" id="drawer-nome">—</div>
+            <div class="perfil-sub">FitTrack Member</div>
+            <button class="drawer-logout" onclick="Auth.logout()">Sair da conta</button>
         </div>
-        <div class="mini-grafico-wrap">
-            <div class="mini-grafico" id="mini-grafico">
-                <div class="mini-sem-dados">Sem dados ainda</div>
-            </div>
-            <div class="mini-obj-wrap" id="mini-obj-wrap" style="display:none;">
-                <div class="mini-obj-linha"></div>
-                <span class="mini-obj-label" id="mini-obj-label">obj</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== DRAWER (Menu) ===== -->
-    <div class="drawer-overlay" id="drawer-overlay" onclick="fecharDrawer()"></div>
-    <div class="drawer" id="drawer">
-        <div class="drawer-header">
-            <span class="drawer-titulo">Menu</span>
-            <button class="drawer-fechar" onclick="fecharDrawer()" aria-label="Fechar menu">✕</button>
-        </div>
-        <div class="drawer-content">
-
-            <!-- PERFIL -->
-            <div class="drawer-secao">
-                <div class="drawer-secao-titulo">Perfil</div>
-                <div class="perfil-avatar">👤</div>
-                <div class="perfil-nome" id="drawer-nome">—</div>
-                <div class="perfil-sub">FitTrack Member</div>
-                <button class="drawer-logout" onclick="Auth.logout()">Sair da conta</button>
-            </div>
-
-            <!-- MACROS -->
-            <div class="drawer-secao">
-                <div class="drawer-secao-titulo">Macros</div>
-                <a href="macros.html" class="drawer-link-pagina" onclick="fecharDrawer()">
-                    🧮 Calculadora de Macros
-                    <span style="margin-left:auto; opacity:0.5;">→</span>
-                </a>
-            </div>
-
+        <div class="drawer-secao">
+            <div class="drawer-secao-titulo">Macros</div>
+            <a href="macros.html" class="drawer-link-pagina" onclick="fecharDrawer()">
+                🧮 Calculadora de Macros
+                <span style="margin-left:auto; opacity:0.5;">→</span>
+            </a>
         </div>
     </div>
+</div>
 
-    <script src="alimentos.js"></script>
-    <script src="script.js"></script>
-    <script>
-        // ===== NOME NO DRAWER =====
-        const nomeUtilizador = Auth.actual() || 'convidado';
-        document.getElementById('drawer-nome').textContent = nomeUtilizador;
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="alimentos.js"></script>
+<script src="script.js"></script>
+<script>
+    // ===== INICIALIZAR DATAS =====
+    const _hoje = dataHoje();
+    ['data-refeicao','data-refeicao-composta','data-refeicao-manual','data-diario','data-registo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.value = _hoje;
+    });
 
-        // ===== RESUMO DE HOJE =====
-        const hoje = dataHoje();
-        const refHoje = refeicoes.filter(r => r.data === hoje);
-        const calHoje  = refHoje.reduce((s, r) => s + (r.calorias || 0), 0);
-        const protHoje = refHoje.reduce((s, r) => s + (r.proteina || 0), 0);
-        const hidHoje  = refHoje.reduce((s, r) => s + (r.hidratos || 0), 0);
-        const gordHoje = refHoje.reduce((s, r) => s + (r.gordura  || 0), 0);
+    // ===== NOME NO DRAWER =====
+    document.getElementById('drawer-nome').textContent = Auth.actual() || 'convidado';
+
+    // ===== RESUMO DE HOJE =====
+    (function atualizarResumo() {
+        const refHoje = refeicoes.filter(r => r.data === _hoje);
+        const calHoje  = refHoje.reduce((s,r) => s + (r.calorias||0), 0);
+        const protHoje = refHoje.reduce((s,r) => s + (r.proteina||0), 0);
+        const hidHoje  = refHoje.reduce((s,r) => s + (r.hidratos||0), 0);
+        const gordHoje = refHoje.reduce((s,r) => s + (r.gordura||0), 0);
         const ultimoPeso = registos[0];
 
-        document.getElementById('res-cal-hoje').innerHTML =
-            `${calHoje} <span class="resumo-item-unidade">kcal</span>`;
-        if (objetivoCalorias) {
-            document.getElementById('res-obj-hoje').innerHTML =
-                `${objetivoCalorias} <span class="resumo-item-unidade">kcal</span>`;
-        }
+        document.getElementById('res-cal-hoje').innerHTML = `${calHoje} <span class="resumo-item-unidade">kcal</span>`;
+        if (objetivoCalorias) document.getElementById('res-obj-hoje').innerHTML = `${objetivoCalorias} <span class="resumo-item-unidade">kcal</span>`;
         if (ultimoPeso) {
-            document.getElementById('res-peso-hoje').innerHTML =
-                `${ultimoPeso.peso} <span class="resumo-item-unidade">kg</span>`;
-            if (ultimoPeso.massaMagra) {
-                document.getElementById('res-magra-hoje').innerHTML =
-                    `${ultimoPeso.massaMagra} <span class="resumo-item-unidade">kg</span>`;
-            }
+            document.getElementById('res-peso-hoje').innerHTML = `${ultimoPeso.peso} <span class="resumo-item-unidade">kg</span>`;
+            if (ultimoPeso.massaMagra) document.getElementById('res-magra-hoje').innerHTML = `${ultimoPeso.massaMagra} <span class="resumo-item-unidade">kg</span>`;
         }
         document.getElementById('res-prot-hoje').textContent = Math.round(protHoje) + 'g';
         document.getElementById('res-hid-hoje').textContent  = Math.round(hidHoje)  + 'g';
         document.getElementById('res-gord-hoje').textContent = Math.round(gordHoje) + 'g';
+    })();
 
-        // ===== STATS NOS CARDS =====
-        if (calHoje > 0) document.getElementById('stat-dieta').textContent = calHoje + ' kcal';
-        if (ultimoPeso)  document.getElementById('stat-peso').textContent  = ultimoPeso.peso + ' kg';
+    // ===== ÁGUA — expandir =====
+    function toggleAguaCustom() {
+        const painel = document.getElementById('agua-custom');
+        const seta   = document.getElementById('agua-seta');
+        const btn    = document.getElementById('agua-expandir-btn');
+        const aberto = painel.style.display !== 'none';
+        painel.style.display = aberto ? 'none' : 'block';
+        seta.textContent     = aberto ? '▼' : '▲';
+        btn.setAttribute('aria-expanded', String(!aberto));
+    }
 
-        // Água
-        const mlHoje = aguaML();
-        if (mlHoje > 0) document.getElementById('stat-agua').textContent = mlHoje + ' ml';
+    // ===== DRAWER =====
+    function abrirDrawer() {
+        document.getElementById('drawer').classList.add('aberto');
+        document.getElementById('drawer-overlay').classList.add('aberto');
+        document.body.style.overflow = 'hidden';
+    }
+    function fecharDrawer() {
+        document.getElementById('drawer').classList.remove('aberto');
+        document.getElementById('drawer-overlay').classList.remove('aberto');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharDrawer(); });
 
-        // Sono
-        const diarioHoje = diario[hoje];
-        if (diarioHoje && diarioHoje.sono)
-            document.getElementById('stat-sono').textContent = diarioHoje.sono + 'h sono';
+    // ===== BOTTOM NAV — scroll e efeito =====
+    const bnTabs = document.querySelectorAll('.bn-tab');
+    const seccoesIds = ['refeicoes','agua','sec-sono','corpo','estatisticas'];
 
-        // ===== EFEITO FOCO NOS CARDS =====
-        const cards = document.querySelectorAll('.nav-card');
-        const cardsWrap = document.getElementById('nav-cards');
-
-        cards.forEach(card => {
-            card.addEventListener('touchstart', () => {
-                cardsWrap.classList.add('tem-focado');
-                cards.forEach(c => c.classList.remove('focado'));
-                card.classList.add('focado');
-            }, { passive: true });
-            ['touchend', 'touchcancel'].forEach(evt => {
-                card.addEventListener(evt, () => {
-                    setTimeout(() => {
-                        cardsWrap.classList.remove('tem-focado');
-                        cards.forEach(c => c.classList.remove('focado'));
-                    }, 350);
-                });
-            });
-            card.addEventListener('mousedown', () => {
-                cardsWrap.classList.add('tem-focado');
-                cards.forEach(c => c.classList.remove('focado'));
-                card.classList.add('focado');
-            });
-            card.addEventListener('mouseup', () => {
-                setTimeout(() => {
-                    cardsWrap.classList.remove('tem-focado');
-                    cards.forEach(c => c.classList.remove('focado'));
-                }, 350);
-            });
-            card.addEventListener('mouseleave', () => {
-                if (card.classList.contains('focado')) {
-                    cardsWrap.classList.remove('tem-focado');
-                    cards.forEach(c => c.classList.remove('focado'));
-                }
-            });
+    function setActiveTab(id) {
+        bnTabs.forEach(t => {
+            const isActive = t.dataset.secao === id;
+            t.classList.toggle('ativo', isActive);
         });
+    }
 
-        // ===== MINI GRÁFICO =====
-        function renderMiniGrafico() {
-            const container = document.getElementById('mini-grafico');
-            const objWrap   = document.getElementById('mini-obj-wrap');
-            const progHoje  = document.getElementById('prog-hoje');
-            if (!container) return;
+    function irPara(id) {
+        // Efeito visual imediato
+        setActiveTab(id);
+        // Scroll
+        const el = document.getElementById(id);
+        if (el) {
+            const top = el.getBoundingClientRect().top + window.scrollY - 57;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    }
 
-            const dias = [];
-            let maxCal = objetivoCalorias || 2000;
-
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                const ds = d.toISOString().split('T')[0];
-                const refs = refeicoes.filter(r => r.data === ds);
-                const cal = refs.reduce((s, r) => s + r.calorias, 0);
-                const label = d.toLocaleDateString('pt-PT', { weekday: 'short' })
-                               .replace('.', '').slice(0, 1).toUpperCase();
-                if (cal > maxCal) maxCal = cal;
-                dias.push({ cal, label, isHoje: i === 0 });
-            }
-
-            const totalCal = dias.reduce((s, d) => s + d.cal, 0);
-            if (totalCal === 0) {
-                container.innerHTML = '<div class="mini-sem-dados">Ainda sem dados esta semana</div>';
-                if (objWrap) objWrap.style.display = 'none';
-                if (progHoje) progHoje.textContent = 'Hoje: —';
-                return;
-            }
-
-            const HEIGHT = 62;
-            container.innerHTML = dias.map(d => {
-                const h = d.cal > 0 ? Math.max(3, Math.round((d.cal / maxCal) * HEIGHT)) : 0;
-                let cor = d.isHoje ? 'var(--cor-primaria)'
-                        : d.cal >= objetivoCalorias ? 'var(--cor-secundaria)'
-                        : d.cal > 0 ? 'var(--cor-borda)' : 'transparent';
-                return `<div class="mini-barra-wrap" title="${d.label}: ${d.cal} kcal">
-                    <div class="mini-barra" style="height:${h}px; background:${cor};"></div>
-                    <span class="mini-barra-label">${d.label}</span>
-                </div>`;
-            }).join('');
-
-            if (objWrap && objetivoCalorias > 0 && maxCal > 0) {
-                const topPx = HEIGHT - Math.round((objetivoCalorias / maxCal) * HEIGHT);
-                objWrap.style.display = 'flex';
-                objWrap.style.top = topPx + 'px';
-                const lbl = document.getElementById('mini-obj-label');
-                if (lbl) lbl.textContent = objetivoCalorias + ' kcal';
-            }
-
-            const calHojeGraf = dias[dias.length - 1].cal;
-            if (progHoje) {
-                progHoje.textContent = calHojeGraf > 0
-                    ? `Hoje: ${calHojeGraf} / ${objetivoCalorias} kcal`
-                    : 'Hoje: sem registos';
+    // Atualizar tab ativa ao fazer scroll
+    window.addEventListener('scroll', () => {
+        let atualId = null;
+        for (let i = seccoesIds.length - 1; i >= 0; i--) {
+            const el = document.getElementById(seccoesIds[i]);
+            if (el && el.getBoundingClientRect().top <= 100) {
+                atualId = seccoesIds[i];
+                break;
             }
         }
-        renderMiniGrafico();
-
-        // ===== DRAWER =====
-        function abrirDrawer() {
-            document.getElementById('drawer').classList.add('aberto');
-            document.getElementById('drawer-overlay').classList.add('aberto');
-            document.body.style.overflow = 'hidden';
-        }
-        function fecharDrawer() {
-            document.getElementById('drawer').classList.remove('aberto');
-            document.getElementById('drawer-overlay').classList.remove('aberto');
-            document.body.style.overflow = '';
-        }
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharDrawer(); });
-    </script>
+        setActiveTab(atualId);
+    }, { passive: true });
+</script>
 </body>
 </html>

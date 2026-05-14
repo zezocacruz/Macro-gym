@@ -467,12 +467,33 @@ body {
 }
 
 /* ===== ÁGUA CUSTOM ===== */
+.agua-expandir-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    color: var(--cor-texto-claro);
+    font-size: 0.9rem;
+    padding: 0.6rem 0.9rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.agua-expandir-btn:hover, .agua-expandir-btn:active {
+    background-color: var(--cor-borda);
+}
+.agua-seta {
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+}
 .agua-custom {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 1rem;
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
+    padding-top: 0.8rem;
     border-top: 1px solid var(--cor-borda);
 }
 .agua-custom-grupo label {
